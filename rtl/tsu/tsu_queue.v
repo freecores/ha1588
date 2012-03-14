@@ -11,7 +11,7 @@ module tsu_queue (
     input [79:0] rtc_timer_in,
 
     input         q_rst,
-    input         q_clk,
+    input         q_rd_clk,
     input         q_rd_en,
     output [ 7:0] q_rd_stat,
     output [91:0] q_rd_data
@@ -177,5 +177,26 @@ ptp_parser parser(
 );
 
 // ptp time stamp dcfifo
+wire q_wr_clk = gmii_clk;
+wire q_wr_en = ptp_found;
+wire [95:0] q_wr_data = {4'd0, ptp_infor};
+wire [2:0] q_wrusedw;
+wire [2:0] q_rdusedw;
+
+ptp_queue queue(
+  .aclr(q_rst),
+
+  .wrclk(q_wr_clk),
+  .wrreq(q_wr_en && q_wrusedw<=5),
+  .data(q_wr_data),
+  .wrusedw(q_wrusedw),
+
+  .rdclk(q_rd_clk),
+  .rdreq(q_rd_en && q_rdusedw>=1),
+  .q(q_rd_data),
+  .rdusedw(q_rdusedw)
+);
+
+assign q_rd_stat = {5'd0, q_rdusedw};
 
 endmodule

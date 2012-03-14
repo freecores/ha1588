@@ -38,8 +38,19 @@ add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/ptp_found
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_infor
 add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/aclr
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/wrclk
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/wrreq
+add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/queue/data
+add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/queue/wrusedw
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/rdclk
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/rdreq
+add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/queue/q
+add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/queue/rdusedw
+add wave -noupdate -divider {New Divider}
+add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {23897 ns} 0}
+WaveRestoreCursors {{Cursor 1} {2531732 ps} 0}
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 165
 configure wave -justifyvalue left
@@ -54,4 +65,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {20850 ns} {26445 ns}
+WaveRestoreZoom {0 ps} {27073200 ps}
