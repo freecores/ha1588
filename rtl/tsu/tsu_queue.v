@@ -179,7 +179,7 @@ ptp_parser parser(
 // ptp time stamp dcfifo
 wire q_wr_clk = gmii_clk;
 wire q_wr_en = ptp_found;
-wire [47:0] q_wr_data = {6'd0, ptp_infor};
+wire [47:0] q_wr_data = ptp_infor;
 wire [3:0] q_wrusedw;
 wire [3:0] q_rdusedw;
 

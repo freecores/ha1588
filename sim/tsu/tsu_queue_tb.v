@@ -17,7 +17,9 @@ wire [ 7:0] q_rd_stat;
 wire [47:0] q_rd_data;
 
 initial begin
+  // emulate the hardware behavior when power-up
   DUT_RX.ts_ack = 1'b0;
+  DUT_TX.ts_ack = 1'b0;
 
       rst = 1'b0;
   #10 rst = 1'b1;

@@ -37,10 +37,10 @@ always @(posedge rst or posedge clk) begin
   end
 end
 
-reg [9:0] ptp_cnt;
+reg [ 9:0] ptp_cnt;
 reg ptp_vlan, ptp_ip, ptp_udp, ptp_port, ptp_event;
-reg [3:0] ptp_msgid;
-reg [7:0] ptp_seqid;
+reg [ 3:0] ptp_msgid;
+reg [15:0] ptp_seqid;
 always @(posedge rst or posedge clk) begin
   if (rst)
     ptp_cnt <= 10'd0;
@@ -59,7 +59,7 @@ always @(posedge rst or posedge clk) begin
     ptp_port  <= 1'b0;
     ptp_event <= 1'b0;
     ptp_msgid <= 4'd0;
-    ptp_seqid <= 8'd0;
+    ptp_seqid <= 16'd0;
   end
   else if (ptp_valid_d1 && ptp_sop_d1) begin
     ptp_vlan  <= 1'b0;
@@ -68,7 +68,7 @@ always @(posedge rst or posedge clk) begin
     ptp_port  <= 1'b0;
     ptp_event <= 1'b0;
     ptp_msgid <= 4'd0;
-    ptp_seqid <= 8'd0;
+    ptp_seqid <= 16'd0;
   end
   else begin
     if (ptp_valid_d1 && ptp_cnt==10'd4)  // ether_type == vlan
@@ -94,19 +94,19 @@ end
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 42'd0;
+    ptp_infor <= 48'd0;
   end
   else if (ptp_valid_d1 && ptp_sop_d1) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 42'd0;
+    ptp_infor <= 48'd0;
   end
   else if (ptp_valid_d1 && ptp_eop_d1) begin
     ptp_found <=  ptp_event;
-    ptp_infor <= {ptp_msgid, ptp_seqid, ptp_time};
+    ptp_infor <= {ptp_seqid, ptp_msgid[1:0], ptp_time};
   end
   else begin
     ptp_found <=  1'b0;
-    ptp_infor <= 42'd0;
+    ptp_infor <= 48'd0;
   end
 end
 
