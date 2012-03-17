@@ -7,10 +7,10 @@ module ptp_parser (
   input        ptp_sop,
   input        ptp_eop,
   input [ 1:0] ptp_mod,
-  input [29:0] ptp_time,
+  input [31:0] ptp_time,
 
   output reg        ptp_found,
-  output reg [41:0] ptp_infor
+  output reg [51:0] ptp_infor
 );
 
 reg [31:0] ptp_data_d1;
@@ -94,19 +94,19 @@ end
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 48'd0;
+    ptp_infor <= 52'd0;
   end
   else if (ptp_valid_d1 && ptp_sop_d1) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 48'd0;
+    ptp_infor <= 52'd0;
   end
   else if (ptp_valid_d1 && ptp_eop_d1) begin
     ptp_found <=  ptp_event;
-    ptp_infor <= {ptp_seqid, ptp_msgid[1:0], ptp_time};
+    ptp_infor <= {ptp_seqid, ptp_msgid, ptp_time};  // 16+4+32
   end
   else begin
     ptp_found <=  1'b0;
-    ptp_infor <= 48'd0;
+    ptp_infor <= 52'd0;
   end
 end
 
