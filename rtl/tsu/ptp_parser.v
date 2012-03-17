@@ -7,10 +7,10 @@ module ptp_parser (
   input        ptp_sop,
   input        ptp_eop,
   input [ 1:0] ptp_mod,
-  input [79:0] ptp_time,
+  input [29:0] ptp_time,
 
   output reg        ptp_found,
-  output reg [91:0] ptp_infor
+  output reg [41:0] ptp_infor
 );
 
 reg [31:0] ptp_data_d1;
@@ -58,6 +58,7 @@ always @(posedge rst or posedge clk) begin
     ptp_udp   <= 1'b0;
     ptp_port  <= 1'b0;
     ptp_event <= 1'b0;
+    ptp_msgid <= 4'd0;
     ptp_seqid <= 8'd0;
   end
   else if (ptp_valid_d1 && ptp_sop_d1) begin
@@ -66,11 +67,14 @@ always @(posedge rst or posedge clk) begin
     ptp_udp   <= 1'b0;
     ptp_port  <= 1'b0;
     ptp_event <= 1'b0;
+    ptp_msgid <= 4'd0;
     ptp_seqid <= 8'd0;
   end
   else begin
     if (ptp_valid_d1 && ptp_cnt==10'd4)  // ether_type == vlan
       ptp_vlan  <= ( ptp_data_d1[31:16]==16'h8100);
+    else
+      ptp_vlan  <= 1'b0;
     if (ptp_valid_d1 && ptp_cnt==10'd4)  // ether_type == ip
       ptp_ip    <= ( ptp_data_d1[31:16]==16'h0800);
     if (ptp_valid_d1 && ptp_cnt==10'd6)  // ip_type == udp
@@ -90,11 +94,11 @@ end
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 91'd0;
+    ptp_infor <= 42'd0;
   end
   else if (ptp_valid_d1 && ptp_sop_d1) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 91'd0;
+    ptp_infor <= 42'd0;
   end
   else if (ptp_valid_d1 && ptp_eop_d1) begin
     ptp_found <=  ptp_event;
@@ -102,7 +106,7 @@ always @(posedge rst or posedge clk) begin
   end
   else begin
     ptp_found <=  1'b0;
-    ptp_infor <= 91'd0;
+    ptp_infor <= 42'd0;
   end
 end
 

@@ -48,14 +48,14 @@ module ptp_queue (
 	wrusedw);
 
 	input	  aclr;
-	input	[95:0]  data;
+	input	[47:0]  data;
 	input	  rdclk;
 	input	  rdreq;
 	input	  wrclk;
 	input	  wrreq;
-	output	[95:0]  q;
-	output	[2:0]  rdusedw;
-	output	[2:0]  wrusedw;
+	output	[47:0]  q;
+	output	[3:0]  rdusedw;
+	output	[3:0]  wrusedw;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
@@ -64,12 +64,12 @@ module ptp_queue (
 // synopsys translate_on
 `endif
 
-	wire [95:0] sub_wire0;
-	wire [2:0] sub_wire1;
-	wire [2:0] sub_wire2;
-	wire [95:0] q = sub_wire0[95:0];
-	wire [2:0] wrusedw = sub_wire1[2:0];
-	wire [2:0] rdusedw = sub_wire2[2:0];
+	wire [47:0] sub_wire0;
+	wire [3:0] sub_wire1;
+	wire [3:0] sub_wire2;
+	wire [47:0] q = sub_wire0[47:0];
+	wire [3:0] wrusedw = sub_wire1[3:0];
+	wire [3:0] rdusedw = sub_wire2[3:0];
 
 	dcfifo	dcfifo_component (
 				.rdclk (rdclk),
@@ -87,11 +87,11 @@ module ptp_queue (
 				.wrfull ());
 	defparam
 		dcfifo_component.intended_device_family = "Cyclone III",
-		dcfifo_component.lpm_numwords = 8,
+		dcfifo_component.lpm_numwords = 16,
 		dcfifo_component.lpm_showahead = "OFF",
 		dcfifo_component.lpm_type = "dcfifo",
-		dcfifo_component.lpm_width = 96,
-		dcfifo_component.lpm_widthu = 3,
+		dcfifo_component.lpm_width = 48,
+		dcfifo_component.lpm_widthu = 4,
 		dcfifo_component.overflow_checking = "ON",
 		dcfifo_component.rdsync_delaypipe = 4,
 		dcfifo_component.underflow_checking = "ON",
@@ -111,7 +111,7 @@ endmodule
 // Retrieval info: PRIVATE: AlmostFullThr NUMERIC "-1"
 // Retrieval info: PRIVATE: CLOCKS_ARE_SYNCHRONIZED NUMERIC "0"
 // Retrieval info: PRIVATE: Clock NUMERIC "4"
-// Retrieval info: PRIVATE: Depth NUMERIC "8"
+// Retrieval info: PRIVATE: Depth NUMERIC "16"
 // Retrieval info: PRIVATE: Empty NUMERIC "1"
 // Retrieval info: PRIVATE: Full NUMERIC "1"
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone III"
@@ -124,11 +124,11 @@ endmodule
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 // Retrieval info: PRIVATE: UNDERFLOW_CHECKING NUMERIC "0"
 // Retrieval info: PRIVATE: UsedW NUMERIC "1"
-// Retrieval info: PRIVATE: Width NUMERIC "96"
+// Retrieval info: PRIVATE: Width NUMERIC "48"
 // Retrieval info: PRIVATE: dc_aclr NUMERIC "1"
 // Retrieval info: PRIVATE: diff_widths NUMERIC "0"
 // Retrieval info: PRIVATE: msb_usedw NUMERIC "0"
-// Retrieval info: PRIVATE: output_width NUMERIC "96"
+// Retrieval info: PRIVATE: output_width NUMERIC "48"
 // Retrieval info: PRIVATE: rsEmpty NUMERIC "0"
 // Retrieval info: PRIVATE: rsFull NUMERIC "0"
 // Retrieval info: PRIVATE: rsUsedW NUMERIC "1"
@@ -139,11 +139,11 @@ endmodule
 // Retrieval info: PRIVATE: wsUsedW NUMERIC "1"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone III"
-// Retrieval info: CONSTANT: LPM_NUMWORDS NUMERIC "8"
+// Retrieval info: CONSTANT: LPM_NUMWORDS NUMERIC "16"
 // Retrieval info: CONSTANT: LPM_SHOWAHEAD STRING "OFF"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "dcfifo"
-// Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "96"
-// Retrieval info: CONSTANT: LPM_WIDTHU NUMERIC "3"
+// Retrieval info: CONSTANT: LPM_WIDTH NUMERIC "48"
+// Retrieval info: CONSTANT: LPM_WIDTHU NUMERIC "4"
 // Retrieval info: CONSTANT: OVERFLOW_CHECKING STRING "ON"
 // Retrieval info: CONSTANT: RDSYNC_DELAYPIPE NUMERIC "4"
 // Retrieval info: CONSTANT: UNDERFLOW_CHECKING STRING "ON"
@@ -151,27 +151,27 @@ endmodule
 // Retrieval info: CONSTANT: WRITE_ACLR_SYNCH STRING "OFF"
 // Retrieval info: CONSTANT: WRSYNC_DELAYPIPE NUMERIC "4"
 // Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT GND "aclr"
-// Retrieval info: USED_PORT: data 0 0 96 0 INPUT NODEFVAL "data[95..0]"
-// Retrieval info: USED_PORT: q 0 0 96 0 OUTPUT NODEFVAL "q[95..0]"
+// Retrieval info: USED_PORT: data 0 0 48 0 INPUT NODEFVAL "data[47..0]"
+// Retrieval info: USED_PORT: q 0 0 48 0 OUTPUT NODEFVAL "q[47..0]"
 // Retrieval info: USED_PORT: rdclk 0 0 0 0 INPUT NODEFVAL "rdclk"
 // Retrieval info: USED_PORT: rdreq 0 0 0 0 INPUT NODEFVAL "rdreq"
-// Retrieval info: USED_PORT: rdusedw 0 0 3 0 OUTPUT NODEFVAL "rdusedw[2..0]"
+// Retrieval info: USED_PORT: rdusedw 0 0 4 0 OUTPUT NODEFVAL "rdusedw[3..0]"
 // Retrieval info: USED_PORT: wrclk 0 0 0 0 INPUT NODEFVAL "wrclk"
 // Retrieval info: USED_PORT: wrreq 0 0 0 0 INPUT NODEFVAL "wrreq"
-// Retrieval info: USED_PORT: wrusedw 0 0 3 0 OUTPUT NODEFVAL "wrusedw[2..0]"
+// Retrieval info: USED_PORT: wrusedw 0 0 4 0 OUTPUT NODEFVAL "wrusedw[3..0]"
 // Retrieval info: CONNECT: @aclr 0 0 0 0 aclr 0 0 0 0
-// Retrieval info: CONNECT: @data 0 0 96 0 data 0 0 96 0
+// Retrieval info: CONNECT: @data 0 0 48 0 data 0 0 48 0
 // Retrieval info: CONNECT: @rdclk 0 0 0 0 rdclk 0 0 0 0
 // Retrieval info: CONNECT: @rdreq 0 0 0 0 rdreq 0 0 0 0
 // Retrieval info: CONNECT: @wrclk 0 0 0 0 wrclk 0 0 0 0
 // Retrieval info: CONNECT: @wrreq 0 0 0 0 wrreq 0 0 0 0
-// Retrieval info: CONNECT: q 0 0 96 0 @q 0 0 96 0
-// Retrieval info: CONNECT: rdusedw 0 0 3 0 @rdusedw 0 0 3 0
-// Retrieval info: CONNECT: wrusedw 0 0 3 0 @wrusedw 0 0 3 0
+// Retrieval info: CONNECT: q 0 0 48 0 @q 0 0 48 0
+// Retrieval info: CONNECT: rdusedw 0 0 4 0 @rdusedw 0 0 4 0
+// Retrieval info: CONNECT: wrusedw 0 0 4 0 @wrusedw 0 0 4 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue.cmp FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue.bsf FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue_bb.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ptp_queue_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf

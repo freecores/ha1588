@@ -8,13 +8,13 @@ module tsu_queue (
     input [7:0] gmii_data,
     
     input        rtc_timer_clk,
-    input [79:0] rtc_timer_in,
+    input [29:0] rtc_timer_in,
 
     input         q_rst,
     input         q_rd_clk,
     input         q_rd_en,
     output [ 7:0] q_rd_stat,
-    output [91:0] q_rd_data
+    output [47:0] q_rd_data
 );
 
 // buffer gmii input
@@ -60,10 +60,10 @@ always @(posedge rst or posedge rtc_timer_clk) begin
     ts_req_d3 <= ts_req_d2;
   end
 end
-reg [79:0] rtc_time_stamp;
+reg [29:0] rtc_time_stamp;
 always @(posedge rst or posedge rtc_timer_clk) begin
   if (rst)
-    rtc_time_stamp <= 80'd0;
+    rtc_time_stamp <= 30'd0;
   else 
     if (ts_req_d2 & !ts_req_d3)
       rtc_time_stamp <= rtc_timer_in;
@@ -90,10 +90,10 @@ always @(posedge rst or posedge gmii_clk) begin
     ts_ack_d3 <= ts_ack_d2;
   end
 end
-reg [79:0] gmii_time_stamp;
+reg [29:0] gmii_time_stamp;
 always @(posedge rst or posedge gmii_clk) begin
   if (rst) begin
-    gmii_time_stamp <= 80'd0;
+    gmii_time_stamp <= 30'd0;
     ts_ack_clr      <= 1'b0;
   end
   else begin
@@ -162,7 +162,7 @@ end
 // ptp packet parser here
 // works at 1/4 gmii_clk frequency, needs multicycle timing constraint
 wire        ptp_found;
-wire [91:0] ptp_infor;
+wire [41:0] ptp_infor;
 ptp_parser parser(
   .clk(gmii_clk),
   .rst(rst),
@@ -179,15 +179,15 @@ ptp_parser parser(
 // ptp time stamp dcfifo
 wire q_wr_clk = gmii_clk;
 wire q_wr_en = ptp_found;
-wire [95:0] q_wr_data = {4'd0, ptp_infor};
-wire [2:0] q_wrusedw;
-wire [2:0] q_rdusedw;
+wire [47:0] q_wr_data = {6'd0, ptp_infor};
+wire [3:0] q_wrusedw;
+wire [3:0] q_rdusedw;
 
 ptp_queue queue(
   .aclr(q_rst),
 
   .wrclk(q_wr_clk),
-  .wrreq(q_wr_en && q_wrusedw<=5),
+  .wrreq(q_wr_en && q_wrusedw<=15),
   .data(q_wr_data),
   .wrusedw(q_wrusedw),
 
@@ -197,6 +197,6 @@ ptp_queue queue(
   .rdusedw(q_rdusedw)
 );
 
-assign q_rd_stat = {5'd0, q_rdusedw};
+assign q_rd_stat = {4'd0, q_rdusedw};
 
 endmodule

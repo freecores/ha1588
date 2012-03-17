@@ -14,7 +14,7 @@ reg  [79:0] rtc_timer_in;
 reg         q_rd_clk;
 reg         q_rd_en;
 wire [ 7:0] q_rd_stat;
-wire [91:0] q_rd_data;
+wire [47:0] q_rd_data;
 
 initial begin
   DUT_RX.ts_ack = 1'b0;
@@ -48,7 +48,7 @@ tsu_queue DUT_RX
     .gmii_data(gmii_rxdata),
 
     .rtc_timer_clk(rtc_timer_clk),
-    .rtc_timer_in(rtc_timer_in),
+    .rtc_timer_in(rtc_timer_in[29:0]),
 
     .q_rst(rst),
     .q_rd_clk(q_rd_clk),
@@ -73,7 +73,7 @@ tsu_queue DUT_TX
     .gmii_data(gmii_txdata),
 
     .rtc_timer_clk(rtc_timer_clk),
-    .rtc_timer_in(rtc_timer_in),
+    .rtc_timer_in(rtc_timer_in[29:0]),
 
     .q_rst(rst),
     .q_rd_clk(q_rd_clk),
