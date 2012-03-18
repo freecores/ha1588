@@ -166,12 +166,12 @@ wire [51:0] ptp_infor;
 ptp_parser parser(
   .clk(gmii_clk),
   .rst(rst),
-  .ptp_data(int_data),
-  .ptp_valid(int_valid),
-  .ptp_sop(int_sop),
-  .ptp_eop(int_eop),
-  .ptp_mod(int_mod),
-  .ptp_time(gmii_time_stamp),
+  .int_data(int_data),
+  .int_valid(int_valid),
+  .int_sop(int_sop),
+  .int_eop(int_eop),
+  .int_mod(int_mod),
+  .sop_time(gmii_time_stamp),
   .ptp_found(ptp_found),
   .ptp_infor(ptp_infor)
 );
