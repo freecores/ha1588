@@ -22,6 +22,7 @@ add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/int_mod
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/parser/int_cnt
 add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/parser/bypass_ipv4_cnt
+add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/parser/bypass_ipv6_cnt
 add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/parser/bypass_udp_cnt
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/int_valid_d1
@@ -32,6 +33,7 @@ add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/int_data_d1
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_vlan
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_ipv4
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_ipv6
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_udp
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/ptp_l2
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/ptp_l4
@@ -44,7 +46,7 @@ add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_infor
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {629901 ps} 0}
+WaveRestoreCursors {{Cursor 1} {341698 ps} 0}
 configure wave -namecolwidth 188
 configure wave -valuecolwidth 165
 configure wave -justifyvalue left
@@ -59,4 +61,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {169911 ps} {813489 ps}
+WaveRestoreZoom {177489 ps} {821067 ps}

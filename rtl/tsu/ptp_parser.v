@@ -45,18 +45,24 @@ always @(posedge rst or posedge clk) begin
   if (rst) begin
     int_cnt <= 10'd0;
     bypass_ipv4_cnt <= 10'd0;
+    bypass_ipv6_cnt <= 10'd0;
     bypass_udp_cnt <= 10'd0;
   end
   else begin
     if (int_valid_d1 && int_sop_d1)
       int_cnt <= 10'd0;
     else if (int_valid_d1)
-      int_cnt <= int_cnt + 10'd1 - bypass_vlan - (bypass_ipv4 || bypass_udp);
+      int_cnt <= int_cnt + 10'd1 - bypass_vlan - (bypass_ipv4 || bypass_ipv6 || bypass_udp);
 
     if (int_valid_d1 && int_sop_d1)
       bypass_ipv4_cnt <= 10'd0;
     else if (int_valid_d1 && bypass_ipv4)
       bypass_ipv4_cnt <= bypass_ipv4_cnt + 10'd1;
+
+    if (int_valid_d1 && int_sop_d1)
+      bypass_ipv6_cnt <= 10'd0;
+    else if (int_valid_d1 && bypass_ipv6)
+      bypass_ipv6_cnt <= bypass_ipv6_cnt + 10'd1;
 
     if (int_valid_d1 && int_sop_d1)
       bypass_udp_cnt <= 10'd0;
@@ -69,6 +75,7 @@ always @(posedge rst or posedge clk) begin
   if (rst) begin
     bypass_vlan  <= 1'b0;
     bypass_ipv4  <= 1'b0;
+    bypass_ipv6  <= 1'b0;
     found_udp    <= 1'b0;
     bypass_udp   <= 1'b0;
     ptp_l2    <= 1'b0;
@@ -78,6 +85,7 @@ always @(posedge rst or posedge clk) begin
   else if (int_valid_d1 && int_sop_d1) begin
     bypass_vlan  <= 1'b0;
     bypass_ipv4  <= 1'b0;
+    bypass_ipv6  <= 1'b0;
     found_udp    <= 1'b0;
     bypass_udp   <= 1'b0;
     ptp_l2    <= 1'b0;
@@ -104,14 +112,19 @@ always @(posedge rst or posedge clk) begin
 
     // bypass ipv6
     // ether_type == ip, ip_version == 6
-    // TO BE ADDED HERE
+    if      (int_valid_d1 && int_cnt==10'd3 && bypass_ipv4_cnt==10'd0 &&
+             int_data_d1[31:16]==16'h86dd && int_data_d1[15:12]==4'h6)
+      bypass_ipv6 <= 1'b1;
+    else if (int_valid_d1 && bypass_ipv6_cnt==10'd9)
+      bypass_ipv6 <= 1'b0;
 
     // check if it is UDP
     // ipv4_protocol == udp
     if      (int_valid_d1 && bypass_ipv4_cnt==10'd1 && int_data_d1[ 7: 0]== 8'h11)
       found_udp <= 1'b1;
     // ipv6_protocol == udp
-    // TO BE ADDED HERE
+    else if (int_valid_d1 && bypass_ipv6_cnt==10'd1 && int_data_d1[31:24]== 8'h11)
+      found_udp <= 1'b1;
 
     // bypass udp
     // ipv4_udp
@@ -120,18 +133,19 @@ always @(posedge rst or posedge clk) begin
     else if (int_valid_d1 && bypass_udp_cnt==10'd2)
       bypass_udp <= 1'b0;
     // ipv6_udp
-    // TO BE ADDED HERE
+    else if (int_valid_d1 && bypass_ipv6_cnt==10'd9 && bypass_udp_cnt==10'd0 && found_udp)
+      bypass_udp <= 1'b1;
+    else if (int_valid_d1 && bypass_udp_cnt==10'd2)
+      bypass_udp <= 1'b0;
 
     // check if it is L2 PTP
     // ether_type == ptp
     if (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h88F7)
       ptp_l2 <= 1'b1;
     // check if it is L4 PTP
-    // ipv4_udp_dest_port == ptp_event
+    // udp_dest_port == ptp_event
     if (int_valid_d1 && bypass_udp_cnt==10'd0 && bypass_udp && int_data_d1[31:16]==16'h013f)
       ptp_l4 <= 1'b1;
-    // ipv6_udp_dest_port == ptp_event
-    // TO BE ADDED HERE
 
     // check if it is PTP Event message
     if      (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h88F7    && (int_data_d1[11: 8]== 4'h0 || int_data_d1[11:8]==4'h2))
