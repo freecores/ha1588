@@ -95,16 +95,19 @@ always @(posedge rst or posedge clk) begin
   else begin
     // bypass vlan
     // ether_type == cvlan
-    if (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h8100)
+    if      (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h8100)
       bypass_vlan <= 1'b1;
-    else
-      bypass_vlan <= 1'b0;
     // ether_type == svlan
-    // TO BE ADDED HERE
+    else if (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h9100)
+      bypass_vlan <= 1'b1;
+    else if (int_valid_d1 && int_cnt==10'd4 && int_data_d1[31:16]==16'h8100 && bypass_vlan)
+      bypass_vlan <= 1'b1;
+    else if (int_valid_d1 && bypass_vlan)
+      bypass_vlan <= 1'b0;
 
     // bypass ipv4
     // ether_type == ip, ip_version == 4
-    if      (int_valid_d1 && int_cnt==10'd3 && bypass_ipv4_cnt==10'd0 &&
+    if      (int_valid_d1 && (int_cnt==10'd3 || bypass_vlan && int_cnt==10'd4) && bypass_ipv4_cnt==10'd0 &&
              int_data_d1[31:16]==16'h0800 && int_data_d1[15:12]==4'h4)
       bypass_ipv4 <= 1'b1;
     else if (int_valid_d1 && bypass_ipv4_cnt==10'd4)
@@ -112,7 +115,7 @@ always @(posedge rst or posedge clk) begin
 
     // bypass ipv6
     // ether_type == ip, ip_version == 6
-    if      (int_valid_d1 && int_cnt==10'd3 && bypass_ipv4_cnt==10'd0 &&
+    if      (int_valid_d1 && (int_cnt==10'd3 || bypass_vlan && int_cnt==10'd4) && bypass_ipv6_cnt==10'd0 &&
              int_data_d1[31:16]==16'h86dd && int_data_d1[15:12]==4'h6)
       bypass_ipv6 <= 1'b1;
     else if (int_valid_d1 && bypass_ipv6_cnt==10'd9)
@@ -140,18 +143,21 @@ always @(posedge rst or posedge clk) begin
 
     // check if it is L2 PTP
     // ether_type == ptp
-    if (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h88F7)
+    if (int_valid_d1 && (int_cnt==10'd3 || bypass_vlan && int_cnt==10'd4) && int_data_d1[31:16]==16'h88F7)
       ptp_l2 <= 1'b1;
     // check if it is L4 PTP
     // udp_dest_port == ptp_event
-    if (int_valid_d1 && bypass_udp_cnt==10'd0 && bypass_udp && int_data_d1[31:16]==16'h013f)
+    if (int_valid_d1 && bypass_udp_cnt==10'd0 && bypass_udp &&
+       (int_data_d1[31:16]==16'h013f || int_data_d1[31:16]==16'h0140))
       ptp_l4 <= 1'b1;
 
     // check if it is PTP Event message
-    if      (int_valid_d1 && int_cnt==10'd3 && int_data_d1[31:16]==16'h88F7    && (int_data_d1[11: 8]== 4'h0 || int_data_d1[11:8]==4'h2))
+    if      (int_valid_d1 && (int_cnt==10'd3 || bypass_vlan && int_cnt==10'd4) && int_data_d1[31:16]==16'h88F7    &&
+            (int_data_d1[11: 8]== 4'h0 || int_data_d1[11:8]==4'h2))
       // ptp_message_id == sync || delay_req
       ptp_event <= 1'b1;
-    else if (int_valid_d1 && int_cnt==10'd4 && bypass_udp_cnt==10'd1 && ptp_l4 && (int_data_d1[11: 8]== 4'h0 || int_data_d1[11:8]==4'h2))
+    else if (int_valid_d1 && (int_cnt==10'd4 || bypass_vlan && int_cnt==10'd5) && bypass_udp_cnt==10'd1 && ptp_l4 &&
+            (int_data_d1[11: 8]== 4'h0 || int_data_d1[11:8]==4'h2))
       // ptp_message_id == sync || delay_req
       ptp_event <= 1'b1;
   end
