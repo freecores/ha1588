@@ -44,6 +44,7 @@ add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/ptp_found
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_infor
 add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/BFM_RX/num_rx
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {341698 ps} 0}
@@ -61,4 +62,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {177489 ps} {821067 ps}
+WaveRestoreZoom {0 ps} {247010400 ps}

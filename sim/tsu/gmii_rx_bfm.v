@@ -16,7 +16,7 @@ assign #2 gmii_rxclk = gmii_rxclk_offset;
 
 integer feeder_file_rx, r_rx;
 integer start_addr_rx, end_addr_rx;
-integer index_rx;
+integer index_rx, num_rx;
 reg eof_rx;
 reg pcap_endian_rx;
 reg [31:0] pcap_4bytes_rx;
@@ -24,7 +24,7 @@ reg [31:0] packet_leng_rx;
 reg [ 7:0] packet_byte_rx;
 initial
 begin : feeder_rx
-    gmii_rxctrl   = 1'b0;
+    gmii_rxctrl = 1'b0;
     gmii_rxdata = 4'd0;
     #100;
     feeder_file_rx = $fopen("ptpdv2_rx.pcap","rb");
@@ -43,6 +43,7 @@ begin : feeder_rx
         $fseek(feeder_file_rx, 24, 1);
         // read packet content
         eof_rx = 0;
+        num_rx = 0;
         while (!eof_rx & !$feof(feeder_file_rx))
         begin : fileread_loop
             // skip frame header (8+4)*8
@@ -69,7 +70,7 @@ begin : feeder_rx
                 gmii_rxctrl = 1'b0;
                 gmii_rxdata = 8'h00;
             end
-            // send frame pre-amble 555555d5=4*8
+            // send frame preamble and sfd 5555555d=4*8
             repeat (3)
             begin
                 @(posedge gmii_rxclk_offset);
@@ -78,7 +79,7 @@ begin : feeder_rx
             end
                 @(posedge gmii_rxclk_offset)
                 gmii_rxctrl = 1'b1;
-                gmii_rxdata = 8'hd5;
+                gmii_rxdata = 8'h5d;
             // send frame content
             for (index_rx=0; index_rx<packet_leng_rx; index_rx=index_rx+1)
             begin
@@ -97,12 +98,12 @@ begin : feeder_rx
                 end
             end
             end_addr_rx = $ftell(feeder_file_rx);
+            num_rx = num_rx + 1;
         end
         $fclose(feeder_file_rx);
         gmii_rxctrl = 1'b0;
         gmii_rxdata = 8'h00;
     end
-    #100 $stop;
 end
 
 

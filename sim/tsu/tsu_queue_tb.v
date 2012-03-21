@@ -19,11 +19,17 @@ wire [55:0] q_rd_data;
 initial begin
   // emulate the hardware behavior when power-up
   DUT_RX.ts_ack = 1'b0;
-  //DUT_TX.ts_ack = 1'b0;
+  DUT_TX.ts_ack = 1'b0;
 
       rst = 1'b0;
   #10 rst = 1'b1;
   #20 rst = 1'b0;
+
+  fork
+    @(posedge BFM_RX.eof_rx);
+    @(posedge BFM_TX.eof_tx);
+  join
+  #100 $stop;
 end
 
 initial begin
@@ -66,7 +72,7 @@ gmii_rx_bfm BFM_RX
     .gmii_rxdata(gmii_rxdata)
   );
 
-/*
+
 tsu_queue DUT_TX
   (
     .rst(rst),
@@ -91,7 +97,7 @@ gmii_tx_bfm BFM_TX
     .gmii_txctrl(gmii_txctrl),
     .gmii_txdata(gmii_txdata)
   );
-*/
+
 
 endmodule
 

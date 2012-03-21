@@ -1,6 +1,11 @@
 quit -sim
 
 vlib altera
+vdel -lib altera -all
+vlib work
+vdel -lib work -all
+
+vlib altera
 vlog -work altera altera_mf.v
 
 vlib work

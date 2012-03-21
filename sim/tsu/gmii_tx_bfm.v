@@ -16,7 +16,7 @@ assign #2 gmii_txclk = gmii_txclk_offset;
 
 integer feeder_file_tx, r_tx;
 integer start_addr_tx, end_addr_tx;
-integer index_tx;
+integer index_tx, num_tx;
 reg eof_tx;
 reg pcap_endian_tx;
 reg [31:0] pcap_4bytes_tx;
@@ -43,6 +43,7 @@ begin : feeder_tx
         $fseek(feeder_file_tx, 24, 1);
         // read packet content
         eof_tx = 0;
+        num_tx = 0;
         while (!eof_tx & !$feof(feeder_file_tx))
         begin : fileread_loop
             // skip frame header (8+4)*8
@@ -69,7 +70,7 @@ begin : feeder_tx
                 gmii_txctrl = 1'b0;
                 gmii_txdata = 8'h00;
             end
-            // send frame pre-amble 555555d5=4*8
+            // send frame preamble and sfd 5555555d=4*8
             repeat (3)
             begin
                 @(posedge gmii_txclk_offset);
@@ -78,7 +79,7 @@ begin : feeder_tx
             end
                 @(posedge gmii_txclk_offset)
                 gmii_txctrl = 1'b1;
-                gmii_txdata = 8'hd5;
+                gmii_txdata = 8'h5d;
             // send frame content
             for (index_tx=0; index_tx<packet_leng_tx; index_tx=index_tx+1)
             begin
@@ -97,12 +98,12 @@ begin : feeder_tx
                 end
             end
             end_addr_tx = $ftell(feeder_file_tx);
+            num_tx = num_tx + 1;
         end
         $fclose(feeder_file_tx);
         gmii_txctrl = 1'b0;
         gmii_txdata = 8'h00;
     end
-    #100 $stop;
 end
 
 
