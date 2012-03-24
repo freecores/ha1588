@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 
-module rtc_timer (
+module rtc (
   input rst, clk,
   // 1. direct time adjustment: ToD set up
   input time_ld,

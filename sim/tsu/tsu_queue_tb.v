@@ -47,7 +47,7 @@ initial begin
   forever @(posedge rtc_timer_clk) rtc_timer_in = rtc_timer_in +1;
 end
 
-tsu_queue DUT_RX
+tsu DUT_RX
   (
     .rst(rst),
 
@@ -73,7 +73,7 @@ gmii_rx_bfm BFM_RX
   );
 
 
-tsu_queue DUT_TX
+tsu DUT_TX
   (
     .rst(rst),
 

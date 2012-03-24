@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 
-module tsu_queue (
+module tsu (
     input       rst,
 
     input       gmii_clk,

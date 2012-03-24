@@ -15,7 +15,7 @@ module rtc_timer_tb  ;
   reg time_ld;
   reg [37:0] time_reg_ns_in;
   reg [47:0] time_reg_sec_in;
-  rtc_timer  
+  rtc  
    DUT  ( 
       .rst (rst ) ,
       .clk (clk ) ,

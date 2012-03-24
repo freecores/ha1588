@@ -1,5 +1,5 @@
 vlib work
-vlog -work work ../../rtl/rtc/rtc_timer.v
+vlog -work work ../../rtl/rtc/rtc.v
 vlog -work work rtc_timer_tb.v
 vsim -novopt work.rtc_timer_tb
 
