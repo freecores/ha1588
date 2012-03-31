@@ -35,6 +35,7 @@ add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns__de
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_sec_in_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns_in_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_sec_
+add wave -noupdate -format Logic /rtc_timer_tb/time_reg_sec_inc_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/period_ns_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/period_adj_ns_
@@ -63,4 +64,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {492 ns} {574 ns}
+WaveRestoreZoom {476 ns} {632 ns}

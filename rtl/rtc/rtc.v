@@ -50,41 +50,56 @@ always @(posedge rst or posedge clk) begin
   end
 end
 
-wire [39:0] time_adj_08n_32f;  // 39:32 ns, 31:0 ns_fraction
+reg  [39:0] time_adj_08n_32f;  // 39:32 ns, 31:0 ns_fraction
 wire [15:0] time_adj_08n_08f;  // 15: 8 ns,  7:0 ns_fraction
 reg  [23:0] time_adj_00n_24f;  //           23:0 ns_fraction
 // delta-sigma circuit to keep the lower 24bit of time_adj
-assign time_adj_08n_32f = time_adj[39: 0] + {16'd0, time_adj_00n_24f};  // sigma the delta part
-always @(posedge rst or posedge clk) begin  // keep the delta part
+always @(posedge rst or posedge clk) begin
   if (rst) begin
+    time_adj_08n_32f <= 40'd0;
     time_adj_00n_24f <= 24'd0;
   end
   else begin
-    time_adj_00n_24f <= time_adj_08n_32f[23: 0];
+    time_adj_08n_32f <= time_adj[39: 0] + {16'd0, time_adj_00n_24f};  // add the delta
+    time_adj_00n_24f <= time_adj_08n_32f[23: 0];                      // save the delta
   end
 end
-assign time_adj_08n_08f = time_adj_08n_32f[39:24];  // output w/o the delta part
+assign time_adj_08n_08f = time_adj_08n_32f[39:24];  // output w/o the delta
 
 reg  [37:0] time_acc_30n_08f;  // 37:8 ns , 7:0 ns_fraction
 reg  [47:0] time_acc_48s;      // 47:0 sec
+reg         time_acc_48s_inc;
 // time accumulator (48bit_s + 30bit_ns + 8bit_ns_fraction)
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     time_acc_30n_08f <= 38'd0;
     time_acc_48s     <= 48'd0;
+    time_acc_48s_inc <=  1'b0;
   end
   else begin
     if (time_ld) begin  // direct write
       time_acc_30n_08f <= time_reg_ns_in;
       time_acc_48s     <= time_reg_sec_in;
     end
-    else if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} >= time_acc_modulo) begin
-      time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f} - time_acc_modulo;
-      time_acc_48s     <= time_acc_48s + 1;
-    end
     else begin
-      time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f};
-      time_acc_48s     <= time_acc_48s;
+
+      if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} >= time_acc_modulo)
+        time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f} - time_acc_modulo;
+      else
+        time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f};
+
+      if (time_acc_48s_inc)
+        time_acc_48s_inc <= 1'b0;
+      else if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} + {22'd0, time_adj_08n_08f} >= time_acc_modulo)
+        time_acc_48s_inc <= 1'b1;
+      else
+        time_acc_48s_inc <= 1'b0;
+
+      if (time_acc_48s_inc)
+        time_acc_48s     <= time_acc_48s + 1;
+      else
+        time_acc_48s     <= time_acc_48s;
+
     end
   end
 end

@@ -128,6 +128,7 @@ wire [47:0] time_reg_sec_       = time_reg_sec[47:0];
 wire [29:0] time_reg_ns_        = time_reg_ns[37:8];
 wire [ 7:0] period_ns_          = period_in[39:32];
 wire [ 7:0] period_adj_ns_      = period_adj[39:32];
+wire        time_reg_sec_inc_   = DUT.time_acc_48s_inc;
 // ns fraction watchpoint
 wire [ 7:0] time_acc_modulo_ns_f = time_acc_modulo[7:0];
 wire [ 7:0] time_reg_ns_in_f     = time_reg_ns_in[7:0];
