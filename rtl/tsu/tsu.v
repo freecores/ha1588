@@ -8,13 +8,13 @@ module tsu (
     input [7:0] gmii_data,
     
     input        rtc_timer_clk,
-    input [31:0] rtc_timer_in,
+    input [31:0] rtc_timer_in,  // timeStamp1s_2bit + timeStamp1ns_30bit
 
     input         q_rst,
     input         q_rd_clk,
     input         q_rd_en,
     output [ 7:0] q_rd_stat,
-    output [55:0] q_rd_data
+    output [55:0] q_rd_data  // null_4bit + seqId_16bit + msgId_4bit + timeStamp1s_2bit + timeStamp1ns_30bit
 );
 
 // buffer gmii input

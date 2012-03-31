@@ -21,34 +21,44 @@ module rgs (
   output [39:0] period_adj_out,
   input  [37:0] time_reg_ns_in,
   input  [47:0] time_reg_sec_in,
-  // tsu interface
-  output        q_rst_out,
-  output        q_rd_clk_out,
-  output        q_rd_en_out,
-  input  [ 7:0] q_stat_in,
-  input  [55:0] q_data_in
+  // rx tsu interface
+  output        rx_q_rst_out,
+  output        rx_q_rd_clk_out,
+  output        rx_q_rd_en_out,
+  input  [ 7:0] rx_q_stat_in,
+  input  [55:0] rx_q_data_in,
+  // tx tsu interface
+  output        tx_q_rst_out,
+  output        tx_q_rd_clk_out,
+  output        tx_q_rd_en_out,
+  input  [ 7:0] tx_q_stat_in,
+  input  [55:0] tx_q_data_in
 );
 
 parameter const_00 = 8'h00;
 parameter const_04 = 8'h04;
 parameter const_08 = 8'h08;
-parameter const_0C = 8'h0C;
+parameter const_0c = 8'h0C;
 parameter const_10 = 8'h10;
 parameter const_14 = 8'h14;
 parameter const_18 = 8'h18;
-parameter const_1C = 8'h1C;
+parameter const_1c = 8'h1C;
 parameter const_20 = 8'h20;
 parameter const_24 = 8'h24;
 parameter const_28 = 8'h28;
-parameter const_2C = 8'h2C;
+parameter const_2c = 8'h2C;
 parameter const_30 = 8'h30;
 parameter const_34 = 8'h34;
 parameter const_38 = 8'h38;
-parameter const_3C = 8'h3C;
+parameter const_3c = 8'h3C;
 parameter const_40 = 8'h40;
 parameter const_44 = 8'h44;
 parameter const_48 = 8'h48;
-parameter const_4C = 8'h4C;
+parameter const_4c = 8'h4C;
+parameter const_50 = 8'h50;
+parameter const_54 = 8'h54;
+parameter const_58 = 8'h58;
+parameter const_5c = 8'h5C;
 
 wire cs_00 = (addr_in[5:0]==const_00[5:0])? 1'b1: 1'b0;
 wire cs_04 = (addr_in[5:0]==const_04[5:0])? 1'b1: 1'b0;
@@ -70,11 +80,15 @@ wire cs_40 = (addr_in[5:0]==const_40[5:0])? 1'b1: 1'b0;
 wire cs_44 = (addr_in[5:0]==const_44[5:0])? 1'b1: 1'b0;
 wire cs_48 = (addr_in[5:0]==const_48[5:0])? 1'b1: 1'b0;
 wire cs_4c = (addr_in[5:0]==const_4c[5:0])? 1'b1: 1'b0;
+wire cs_50 = (addr_in[5:0]==const_50[5:0])? 1'b1: 1'b0;
+wire cs_54 = (addr_in[5:0]==const_54[5:0])? 1'b1: 1'b0;
+wire cs_58 = (addr_in[5:0]==const_58[5:0])? 1'b1: 1'b0;
+wire cs_5c = (addr_in[5:0]==const_5c[5:0])? 1'b1: 1'b0;
 
-reg [31:0] reg_00;  // ctrl  8 bit
-reg [31:0] reg_04;  // stat  8 bit
-reg [31:0] reg_08;  // queu 24 bit
-reg [31:0] reg_0c;  // queu 32 bit
+reg [31:0] reg_00;  // ctrl 12 bit
+reg [31:0] reg_04;  // qsta 16 bit
+reg [31:0] reg_08;  // 
+reg [31:0] reg_0c;  // 
 reg [31:0] reg_10;  // tout 16 s
 reg [31:0] reg_14;  // tout 32 s
 reg [31:0] reg_18;  // tout 30 ns
@@ -91,6 +105,10 @@ reg [31:0] reg_40;  // tmin 16 s
 reg [31:0] reg_44;  // tmin 32 s
 reg [31:0] reg_48;  // tmin 30 ns
 reg [31:0] reg_4c;  // tmin  8 nsf
+reg [31:0] reg_50;  // rxqu 24 bit
+reg [31:0] reg_54;  // rxqu 32 bit
+reg [31:0] reg_58;  // txqu 24 bit
+reg [31:0] reg_5c;  // txqu 32 bit
 
 // write registers
 always @(posedge clk) begin
@@ -114,48 +132,62 @@ always @(posedge clk) begin
   if (wr_in && cs_44) reg_44 <= data_in;
   if (wr_in && cs_48) reg_48 <= data_in;
   if (wr_in && cs_4c) reg_4c <= data_in;
+  if (wr_in && cs_50) reg_50 <= data_in;
+  if (wr_in && cs_54) reg_54 <= data_in;
+  if (wr_in && cs_58) reg_58 <= data_in;
+  if (wr_in && cs_5c) reg_5c <= data_in;
 end
 
 // read registers
 reg  [37:0] time_reg_ns_int;
 reg  [47:0] time_reg_sec_int;
-reg  [55:0] q_data_int;
-reg  [ 7:0] q_stat_int;
+reg  [55:0] rx_q_data_int;
+reg  [ 7:0] rx_q_stat_int;
+reg  [55:0] tx_q_data_int;
+reg  [ 7:0] tx_q_stat_int;
 
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
-  if (cs_00) data_out_reg <= reg_00;
-  if (cs_04) data_out_reg <= {24'd0, q_stat_int[ 7: 0]};
-  if (cs_08) data_out_reg <= { 8'd0, q_data_int[55:32]};
-  if (cs_0c) data_out_reg <=         q_data_int[31: 0];
-  if (cs_10) data_out_reg <= reg_10;
-  if (cs_14) data_out_reg <= reg_14;
-  if (cs_18) data_out_reg <= reg_18;
-  if (cs_1c) data_out_reg <= reg_1c;
-  if (cs_20) data_out_reg <= reg_20;
-  if (cs_24) data_out_reg <= reg_24;
-  if (cs_28) data_out_reg <= reg_28;
-  if (cs_2c) data_out_reg <= reg_2c;
-  if (cs_30) data_out_reg <= reg_30;
-  if (cs_34) data_out_reg <= reg_34;
-  if (cs_38) data_out_reg <= reg_38;
-  if (cs_3c) data_out_reg <= reg_3c;
-  if (cs_40) data_out_reg <= {16'd0, time_reg_sec_int[47:32]);
-  if (cs_44) data_out_reg <=         time_reg_sec_int[31: 0];
-  if (cs_48) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
-  if (cs_4c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
+  if (rd_in && cs_00) data_out_reg <= reg_00;
+  if (rd_in && cs_04) data_out_reg <= {8'd0, rx_q_stat_int[ 7: 0], 8'd0, tx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_08) data_out_reg <= reg_08;
+  if (rd_in && cs_0c) data_out_reg <= reg_0c;
+  if (rd_in && cs_10) data_out_reg <= reg_10;
+  if (rd_in && cs_14) data_out_reg <= reg_14;
+  if (rd_in && cs_18) data_out_reg <= reg_18;
+  if (rd_in && cs_1c) data_out_reg <= reg_1c;
+  if (rd_in && cs_20) data_out_reg <= reg_20;
+  if (rd_in && cs_24) data_out_reg <= reg_24;
+  if (rd_in && cs_28) data_out_reg <= reg_28;
+  if (rd_in && cs_2c) data_out_reg <= reg_2c;
+  if (rd_in && cs_30) data_out_reg <= reg_30;
+  if (rd_in && cs_34) data_out_reg <= reg_34;
+  if (rd_in && cs_38) data_out_reg <= reg_38;
+  if (rd_in && cs_3c) data_out_reg <= reg_3c;
+  if (rd_in && cs_40) data_out_reg <= {16'd0, time_reg_sec_int[47:32]};
+  if (rd_in && cs_44) data_out_reg <=         time_reg_sec_int[31: 0];
+  if (rd_in && cs_48) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
+  if (rd_in && cs_4c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
+  if (rd_in && cs_50) data_out_reg <= { 8'd0, rx_q_data_int[55:32]};
+  if (rd_in && cs_54) data_out_reg <=         rx_q_data_int[31: 0];
+  if (rd_in && cs_58) data_out_reg <= { 8'd0, tx_q_data_int[55:32]};
+  if (rd_in && cs_5c) data_out_reg <=         tx_q_data_int[31: 0];
 end
 assign data_out = data_out_reg;
 
 // register mapping
-wire rtc_rst = reg_00[7];
-wire que_rst = reg_00[6];
-wire time_ld = reg_00[5];
-wire perd_ld = reg_00[4];
-wire adjt_ld = reg_00[3];
-wire time_rd = reg_00[2];
-wire queu_rd = reg_00[1];
-//wire         = reg_00[0];
+wire rxq_rst = reg_00[11];
+wire rxqu_rd = reg_00[10];
+wire txq_rst = reg_00[ 9];
+wire txqu_rd = reg_00[ 8];
+//wire       = reg_00[ 7];
+//wire       = reg_00[ 6];
+//wire       = reg_00[ 5];
+wire rtc_rst = reg_00[ 4];
+wire time_ld = reg_00[ 3];
+wire perd_ld = reg_00[ 2];
+wire adjt_ld = reg_00[ 1];
+wire time_rd = reg_00[ 0];
 assign time_reg_sec_out   [47:0] = {reg_10[15: 0], reg_14[31: 0]};
 assign time_reg_ns_out    [37:0] = {reg_18[29: 0], reg_1c[ 7: 0]};
 assign period_out         [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
@@ -211,28 +243,52 @@ always @(posedge rtc_clk_in) begin
   end
 end
 
-// time stamp queue
-assign q_rd_clk_out = clk;
+// rx time stamp queue
+assign rx_q_rd_clk_out = clk;
 
-reg que_rst_d1, que_rst_d2, que_rst_d3;
-assign q_rst_out = que_rst_d2 && !que_rst_d3;
+reg rxq_rst_d1, rxq_rst_d2, rxq_rst_d3;
+assign rx_q_rst_out = rxq_rst_d2 && !rxq_rst_d3;
 always @(posedge clk) begin
-  que_rst_d1 <= que_rst;
-  que_rst_d2 <= que_rst_d1;
-  que_rst_d3 <= que_rst_d2;
+  rxq_rst_d1 <= rxq_rst;
+  rxq_rst_d2 <= rxq_rst_d1;
+  rxq_rst_d3 <= rxq_rst_d2;
 end
 
-reg queu_rd_d1, queu_rd_d2, queu_rd_d3;
-assign q_rd_en_out = queu_rd_d2 && !queu_rd_d3;
+reg rxqu_rd_d1, rxqu_rd_d2, rxqu_rd_d3;
+assign rx_q_rd_en_out = rxqu_rd_d2 && !rxqu_rd_d3;
 always @(posedge clk) begin
-  queu_rd_d1 <= queu_rd;
-  queu_rd_d2 <= queu_rd_d1;
-  queu_rd_d3 <= queu_rd_d2;
+  rxqu_rd_d1 <= rxqu_rd;
+  rxqu_rd_d2 <= rxqu_rd_d1;
+  rxqu_rd_d3 <= rxqu_rd_d2;
 end
 
 always @(posedge clk) begin
-  q_data_int <= q_data_in;
-  q_stat_int <= q_stat_in;
+  rx_q_data_int <= rx_q_data_in;
+  rx_q_stat_int <= rx_q_stat_in;
+end
+
+// tx time stamp queue
+assign tx_q_rd_clk_out = clk;
+
+reg txq_rst_d1, txq_rst_d2, txq_rst_d3;
+assign tx_q_rst_out = txq_rst_d2 && !txq_rst_d3;
+always @(posedge clk) begin
+  txq_rst_d1 <= txq_rst;
+  txq_rst_d2 <= txq_rst_d1;
+  txq_rst_d3 <= txq_rst_d2;
+end
+
+reg txqu_rd_d1, txqu_rd_d2, txqu_rd_d3;
+assign tx_q_rd_en_out = txqu_rd_d2 && !txqu_rd_d3;
+always @(posedge clk) begin
+  txqu_rd_d1 <= txqu_rd;
+  txqu_rd_d2 <= txqu_rd_d1;
+  txqu_rd_d3 <= txqu_rd_d2;
+end
+
+always @(posedge clk) begin
+  tx_q_data_int <= tx_q_data_in;
+  tx_q_stat_int <= tx_q_stat_in;
 end
 
 endmodule
