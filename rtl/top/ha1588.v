@@ -3,7 +3,7 @@
 module ha1588 (
   input         rst,clk,
   input         wr_in,rd_in,
-  input  [ 5:0] addr_in,
+  input  [ 7:0] addr_in,
   input  [31:0] data_in,
   output [31:0] data_out,
 

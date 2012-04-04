@@ -4,7 +4,7 @@ module rgs (
   // generic bus interface
   input         rst,clk,
   input         wr_in,rd_in,
-  input  [ 5:0] addr_in,
+  input  [ 7:0] addr_in,
   input  [31:0] data_in,
   output [31:0] data_out,
   // rtc interface
@@ -60,30 +60,30 @@ parameter const_54 = 8'h54;
 parameter const_58 = 8'h58;
 parameter const_5c = 8'h5C;
 
-wire cs_00 = (addr_in[5:0]==const_00[5:0])? 1'b1: 1'b0;
-wire cs_04 = (addr_in[5:0]==const_04[5:0])? 1'b1: 1'b0;
-wire cs_08 = (addr_in[5:0]==const_08[5:0])? 1'b1: 1'b0;
-wire cs_0c = (addr_in[5:0]==const_0c[5:0])? 1'b1: 1'b0;
-wire cs_10 = (addr_in[5:0]==const_10[5:0])? 1'b1: 1'b0;
-wire cs_14 = (addr_in[5:0]==const_14[5:0])? 1'b1: 1'b0;
-wire cs_18 = (addr_in[5:0]==const_18[5:0])? 1'b1: 1'b0;
-wire cs_1c = (addr_in[5:0]==const_1c[5:0])? 1'b1: 1'b0;
-wire cs_20 = (addr_in[5:0]==const_20[5:0])? 1'b1: 1'b0;
-wire cs_24 = (addr_in[5:0]==const_24[5:0])? 1'b1: 1'b0;
-wire cs_28 = (addr_in[5:0]==const_28[5:0])? 1'b1: 1'b0;
-wire cs_2c = (addr_in[5:0]==const_2c[5:0])? 1'b1: 1'b0;
-wire cs_30 = (addr_in[5:0]==const_30[5:0])? 1'b1: 1'b0;
-wire cs_34 = (addr_in[5:0]==const_34[5:0])? 1'b1: 1'b0;
-wire cs_38 = (addr_in[5:0]==const_38[5:0])? 1'b1: 1'b0;
-wire cs_3c = (addr_in[5:0]==const_3c[5:0])? 1'b1: 1'b0;
-wire cs_40 = (addr_in[5:0]==const_40[5:0])? 1'b1: 1'b0;
-wire cs_44 = (addr_in[5:0]==const_44[5:0])? 1'b1: 1'b0;
-wire cs_48 = (addr_in[5:0]==const_48[5:0])? 1'b1: 1'b0;
-wire cs_4c = (addr_in[5:0]==const_4c[5:0])? 1'b1: 1'b0;
-wire cs_50 = (addr_in[5:0]==const_50[5:0])? 1'b1: 1'b0;
-wire cs_54 = (addr_in[5:0]==const_54[5:0])? 1'b1: 1'b0;
-wire cs_58 = (addr_in[5:0]==const_58[5:0])? 1'b1: 1'b0;
-wire cs_5c = (addr_in[5:0]==const_5c[5:0])? 1'b1: 1'b0;
+wire cs_00 = (addr_in[7:2]==const_00[7:2])? 1'b1: 1'b0;
+wire cs_04 = (addr_in[7:2]==const_04[7:2])? 1'b1: 1'b0;
+wire cs_08 = (addr_in[7:2]==const_08[7:2])? 1'b1: 1'b0;
+wire cs_0c = (addr_in[7:2]==const_0c[7:2])? 1'b1: 1'b0;
+wire cs_10 = (addr_in[7:2]==const_10[7:2])? 1'b1: 1'b0;
+wire cs_14 = (addr_in[7:2]==const_14[7:2])? 1'b1: 1'b0;
+wire cs_18 = (addr_in[7:2]==const_18[7:2])? 1'b1: 1'b0;
+wire cs_1c = (addr_in[7:2]==const_1c[7:2])? 1'b1: 1'b0;
+wire cs_20 = (addr_in[7:2]==const_20[7:2])? 1'b1: 1'b0;
+wire cs_24 = (addr_in[7:2]==const_24[7:2])? 1'b1: 1'b0;
+wire cs_28 = (addr_in[7:2]==const_28[7:2])? 1'b1: 1'b0;
+wire cs_2c = (addr_in[7:2]==const_2c[7:2])? 1'b1: 1'b0;
+wire cs_30 = (addr_in[7:2]==const_30[7:2])? 1'b1: 1'b0;
+wire cs_34 = (addr_in[7:2]==const_34[7:2])? 1'b1: 1'b0;
+wire cs_38 = (addr_in[7:2]==const_38[7:2])? 1'b1: 1'b0;
+wire cs_3c = (addr_in[7:2]==const_3c[7:2])? 1'b1: 1'b0;
+wire cs_40 = (addr_in[7:2]==const_40[7:2])? 1'b1: 1'b0;
+wire cs_44 = (addr_in[7:2]==const_44[7:2])? 1'b1: 1'b0;
+wire cs_48 = (addr_in[7:2]==const_48[7:2])? 1'b1: 1'b0;
+wire cs_4c = (addr_in[7:2]==const_4c[7:2])? 1'b1: 1'b0;
+wire cs_50 = (addr_in[7:2]==const_50[7:2])? 1'b1: 1'b0;
+wire cs_54 = (addr_in[7:2]==const_54[7:2])? 1'b1: 1'b0;
+wire cs_58 = (addr_in[7:2]==const_58[7:2])? 1'b1: 1'b0;
+wire cs_5c = (addr_in[7:2]==const_5c[7:2])? 1'b1: 1'b0;
 
 reg [31:0] reg_00;  // ctrl 12 bit
 reg [31:0] reg_04;  // qsta 16 bit
