@@ -18,14 +18,22 @@ add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rgs/cs_00
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rgs/reg_00
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rgs/data_out_reg
 add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rgs/period_ld_out
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rgs/rtc_rst_out
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rgs/time_ld_out
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rgs/adj_ld_out
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rgs/time_reg_in_latch
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/time_reg_ns
 add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rtc/time_acc_48s_inc
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/time_reg_sec
 add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rtc/adj_ld
+add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/adj_cnt
+add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/time_adj
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {135271 ps} 0}
-configure wave -namecolwidth 222
+WaveRestoreCursors {{Cursor 1} {1452000 ps} 0}
+configure wave -namecolwidth 291
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -39,4 +47,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {1136433 ps}
+WaveRestoreZoom {0 ps} {10500 ns}

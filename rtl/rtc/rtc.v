@@ -26,9 +26,9 @@ reg  [39:0] time_adj;    // 39:32 ns, 31:0 ns_fraction
 // frequency and small time difference adjustment registers
 always @(posedge rst or posedge clk) begin
   if (rst) begin
-    period_fix <= 40'd0;
+    period_fix <= period_fix;  //40'd0;
     adj_cnt    <= 32'hffffffff;
-    time_adj   <= 40'd0;
+    time_adj   <= time_adj;    //40'd0;
   end
   else begin
     if (period_ld)  // load period adjustment
@@ -89,6 +89,8 @@ always @(posedge rst or posedge clk) begin
         time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f};
 
       if (time_acc_48s_inc)
+        time_acc_48s_inc <= 1'b0;
+      else if (time_acc_modulo == 38'd0)
         time_acc_48s_inc <= 1'b0;
       else if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} + {22'd0, time_adj_08n_08f} >= time_acc_modulo)
         time_acc_48s_inc <= 1'b1;
