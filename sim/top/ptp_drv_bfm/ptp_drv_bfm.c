@@ -22,17 +22,17 @@ int ptp_drv_bfm_c(double fw_delay)
   cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x4;
+  cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x0;
+  cpu_data_i = 0x4;
   cpu_wr(cpu_addr_i, cpu_data_i);
   // RESET RTC
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x10;
+  cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x0;
+  cpu_data_i = 0x10;
   cpu_wr(cpu_addr_i, cpu_data_i);
   // LOAD RTC SEC AND NS
   cpu_addr_i = 0x00000010;
@@ -48,10 +48,10 @@ int ptp_drv_bfm_c(double fw_delay)
   cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x8;
+  cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x0;
+  cpu_data_i = 0x8;
   cpu_wr(cpu_addr_i, cpu_data_i);
   // LOAD RTC ADJ
   cpu_addr_i = 0x00000030;
@@ -64,18 +64,35 @@ int ptp_drv_bfm_c(double fw_delay)
   cpu_data_i = 0x20;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x2;
+  cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
   cpu_addr_i = 0x00000000;
-  cpu_data_i = 0x0;
+  cpu_data_i = 0x2;
   cpu_wr(cpu_addr_i, cpu_data_i);
   // READ RTC SEC AND NS
   cpu_addr_i = 0x00000000;
+  cpu_data_i = 0x0;
+  cpu_wr(cpu_addr_i, cpu_data_i);
+  cpu_addr_i = 0x00000000;
   cpu_data_i = 0x1;
   cpu_wr(cpu_addr_i, cpu_data_i);
+  cpu_rd(cpu_addr_i, &cpu_data_o);
+  cpu_addr_i = 0X00000040;
+  cpu_rd(cpu_addr_i, &cpu_data_o);
+  cpu_addr_i = 0X00000044;
+  cpu_rd(cpu_addr_i, &cpu_data_o);
+  cpu_addr_i = 0X00000048;
+  cpu_rd(cpu_addr_i, &cpu_data_o);
+  cpu_addr_i = 0X0000004C;
+  cpu_rd(cpu_addr_i, &cpu_data_o);
+  // READ RTC SEC AND NS
   cpu_addr_i = 0x00000000;
   cpu_data_i = 0x0;
   cpu_wr(cpu_addr_i, cpu_data_i);
+  cpu_addr_i = 0x00000000;
+  cpu_data_i = 0x1;
+  cpu_wr(cpu_addr_i, cpu_data_i);
+  cpu_rd(cpu_addr_i, &cpu_data_o);
   cpu_addr_i = 0X00000040;
   cpu_rd(cpu_addr_i, &cpu_data_o);
   cpu_addr_i = 0X00000044;

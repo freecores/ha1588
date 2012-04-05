@@ -145,10 +145,11 @@ reg  [55:0] rx_q_data_int;
 reg  [ 7:0] rx_q_stat_int;
 reg  [55:0] tx_q_data_int;
 reg  [ 7:0] tx_q_stat_int;
+reg         time_ok;
 
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
-  if (rd_in && cs_00) data_out_reg <= reg_00;
+  if (rd_in && cs_00) data_out_reg <= {reg_00[31:1], time_ok};
   if (rd_in && cs_04) data_out_reg <= {8'd0, rx_q_stat_int[ 7: 0], 8'd0, tx_q_stat_int[ 7: 0]};
   if (rd_in && cs_08) data_out_reg <= reg_08;
   if (rd_in && cs_0c) data_out_reg <= reg_0c;
@@ -196,51 +197,65 @@ assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
 assign period_adj_out     [39:0] = {reg_38[ 7: 0], reg_3c[31: 0]};
 
 // real time clock
-reg rtc_rst_d1, rtc_rst_d2, rtc_rst_d3;
-assign rtc_rst_out = rtc_rst_d2 && !rtc_rst_d3;
-always @(posedge clk) begin
-  rtc_rst_d1 <= rtc_rst;
-  rtc_rst_d2 <= rtc_rst_d1;
-  rtc_rst_d3 <= rtc_rst_d2;
-end
-
-reg time_ld_d1, time_ld_d2, time_ld_d3;
-assign time_ld_out = time_ld_d2 && !time_ld_d3;
-always @(posedge clk) begin
-  time_ld_d1 <= time_ld;
-  time_ld_d2 <= time_ld_d1;
-  time_ld_d3 <= time_ld_d2;
-end
-
-reg perd_ld_d1, perd_ld_d2, perd_ld_d3;
-assign period_ld_out  = perd_ld_d2 && !perd_ld_d3;
-always @(posedge clk) begin
-  perd_ld_d1 <= perd_ld;
-  perd_ld_d2 <= perd_ld_d1;
-  perd_ld_d3 <= perd_ld_d2;
-end
-
-reg adjt_ld_d1, adjt_ld_d2, adjt_ld_d3;
-assign adj_ld_out = adjt_ld_d2 && !adjt_ld_d3;
-always @(posedge clk) begin
-  adjt_ld_d1 <= adjt_ld;
-  adjt_ld_d2 <= adjt_ld_d1;
-  adjt_ld_d3 <= adjt_ld_d2;
-end
-
-reg time_rd_d1, time_rd_d2, time_rd_d3;
-wire time_reg_in_latch = time_rd_d2 && !time_rd_d3;
+reg rtc_rst_s1, rtc_rst_s2, rtc_rst_s3;
+assign rtc_rst_out = rtc_rst_s2 && !rtc_rst_s3;
 always @(posedge rtc_clk_in) begin
-  time_rd_d1 <= time_rd;
-  time_rd_d2 <= time_rd_d1;
-  time_rd_d3 <= time_rd_d2;
+  rtc_rst_s1 <= rtc_rst;
+  rtc_rst_s2 <= rtc_rst_s1;
+  rtc_rst_s3 <= rtc_rst_s2;
+end
+
+reg time_ld_s1, time_ld_s2, time_ld_s3;
+assign time_ld_out = time_ld_s2 && !time_ld_s3;
+always @(posedge rtc_clk_in) begin
+  time_ld_s1 <= time_ld;
+  time_ld_s2 <= time_ld_s1;
+  time_ld_s3 <= time_ld_s2;
+end
+
+reg perd_ld_s1, perd_ld_s2, perd_ld_s3;
+assign period_ld_out  = perd_ld_s2 && !perd_ld_s3;
+always @(posedge rtc_clk_in) begin
+  perd_ld_s1 <= perd_ld;
+  perd_ld_s2 <= perd_ld_s1;
+  perd_ld_s3 <= perd_ld_s2;
+end
+
+reg adjt_ld_s1, adjt_ld_s2, adjt_ld_s3;
+assign adj_ld_out = adjt_ld_s2 && !adjt_ld_s3;
+always @(posedge rtc_clk_in) begin
+  adjt_ld_s1 <= adjt_ld;
+  adjt_ld_s2 <= adjt_ld_s1;
+  adjt_ld_s3 <= adjt_ld_s2;
+end
+
+// RTC time read CDC hand-shaking
+reg time_rd_s1, time_rd_s2, time_rd_s3;
+wire time_rd_ack = time_rd_s2 && !time_rd_s3;
+always @(posedge rtc_clk_in) begin
+  time_rd_s1 <= time_rd;
+  time_rd_s2 <= time_rd_s1;
+  time_rd_s3 <= time_rd_s2;
 end
 
 always @(posedge rtc_clk_in) begin
-  if (time_reg_in_latch) begin
+  if (time_rd_ack) begin
     time_reg_ns_int  <= time_reg_ns_in;
     time_reg_sec_int <= time_reg_sec_in;	  
   end
+end
+
+reg time_rd_d1;
+wire time_rd_req = time_rd && !time_rd_d1;
+always @(posedge clk) begin
+  time_rd_d1 <= time_rd;
+end
+
+always @(posedge clk or posedge time_rd_ack) begin
+  if (time_rd_ack)
+    time_ok <= 1'b1;
+  else if (time_rd_req)
+    time_ok <= 1'b0;
 end
 
 // rx time stamp queue
