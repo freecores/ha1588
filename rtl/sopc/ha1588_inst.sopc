@@ -41,8 +41,8 @@
  <parameter name="maxAdditionalLatency" value="0" />
  <parameter name="projectName" value="ha1588_inst.qpf" />
  <parameter name="sopcBorderPoints" value="true" />
- <parameter name="systemHash" value="478272704" />
- <parameter name="timeStamp" value="1333178915255" />
+ <parameter name="systemHash" value="4608333994" />
+ <parameter name="timeStamp" value="1333703471124" />
  <module kind="clock_source" version="10.1" enabled="1" name="clk_0">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -67,7 +67,7 @@
   <parameter name="USE_WRITE" value="1" />
   <parameter name="USE_ADDRESS" value="1" />
   <parameter name="USE_BYTE_ENABLE" value="1" />
-  <parameter name="USE_BURSTCOUNT" value="1" />
+  <parameter name="USE_BURSTCOUNT" value="0" />
   <parameter name="USE_READ_DATA" value="1" />
   <parameter name="USE_READ_DATA_VALID" value="1" />
   <parameter name="USE_WRITE_DATA" value="1" />
@@ -87,8 +87,8 @@
   <parameter name="ASSERT_HIGH_BYTEENABLE" value="1" />
   <parameter name="ASSERT_HIGH_READDATAVALID" value="1" />
   <parameter name="ASSERT_HIGH_ARBITERLOCK" value="1" />
-  <parameter name="AV_BURST_LINEWRAP" value="1" />
-  <parameter name="AV_BURST_BNDR_ONLY" value="1" />
+  <parameter name="AV_BURST_LINEWRAP" value="0" />
+  <parameter name="AV_BURST_BNDR_ONLY" value="0" />
   <parameter name="AV_MAX_PENDING_READS" value="1" />
   <parameter name="AV_FIX_READ_LATENCY" value="1" />
   <parameter name="AV_READ_WAIT_TIME" value="1" />

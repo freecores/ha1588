@@ -107,7 +107,7 @@ set_interface_property avalon_slave ENABLED true
 
 add_interface_port avalon_slave wr_in write Input 1
 add_interface_port avalon_slave rd_in read Input 1
-add_interface_port avalon_slave addr_in address Input 6
+add_interface_port avalon_slave addr_in address Input 8
 add_interface_port avalon_slave data_in writedata Input 32
 add_interface_port avalon_slave data_out readdata Output 32
 # | 
