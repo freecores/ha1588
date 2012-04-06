@@ -150,8 +150,8 @@ reg         time_ok;
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
   if (rd_in && cs_00) data_out_reg <= {reg_00[31:1], time_ok};
-  if (rd_in && cs_04) data_out_reg <= {8'd0, rx_q_stat_int[ 7: 0], 8'd0, tx_q_stat_int[ 7: 0]};
-  if (rd_in && cs_08) data_out_reg <= reg_08;
+  if (rd_in && cs_04) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_08) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
   if (rd_in && cs_0c) data_out_reg <= reg_0c;
   if (rd_in && cs_10) data_out_reg <= reg_10;
   if (rd_in && cs_14) data_out_reg <= reg_14;

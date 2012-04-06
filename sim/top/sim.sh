@@ -1,8 +1,15 @@
 quit -sim
+
+vlib altera
+vdel -lib altera -all
 vlib work
 vdel -lib work -all
-vlib work
 
+vlib altera
+# compile vendor dependent files
+vlog -work altera altera_mf.v
+
+vlib work
 # compile vendor independent files
 vlog -work work ../../rtl/top/ha1588.v +initreg+0
 vlog -work work ../../rtl/reg/reg.v +initreg+0
@@ -11,13 +18,14 @@ vlog -work work ../../rtl/tsu/tsu.v +initreg+0
 vlog -work work ../../rtl/tsu/ptp_queue.v +initreg+0
 vlog -work work ../../rtl/tsu/ptp_parser.v +initreg+0
 
-# compile vendor dependent files
-vlog -work work altera_mf.v
-
 # compile testbench files
 vlog -work work -sv ha1588_tb.v
 
-# compile driver bfm files
+# compile nic driver bfm files
+vlog -work work -sv nic_drv_bfm/gmii_rx_bfm.v
+vlog -work work -sv nic_drv_bfm/gmii_tx_bfm.v
+
+# compile ptp driver bfm files
 vlog -work work -sv ptp_drv_bfm/ptp_drv_bfm.v
 
 # compile driver bfm files
@@ -32,6 +40,7 @@ gcc -c -I $::env(MODEL_TECH)/../include ptp_drv_bfm/ptp_drv_bfm.c
 gcc -shared -Bsymbolic -o ptp_drv_bfm_c.so ptp_drv_bfm.o
 
 vsim -novopt \
+     -L altera \
      -sv_lib ptp_drv_bfm_c \
      -t ps \
      ha1588_tb 
@@ -40,4 +49,4 @@ log -r */*
 radix -hexadecimal
 do wave.do
 
-run 10000ns
+run 50000ns

@@ -46,6 +46,7 @@ task cpu_rd(input int addr, output int data);
 	up_addr_o = addr;
 	up_rd_o   = 1'b0;
 	for (i=0; i<2; i=i+1) @(posedge up_clk);
+	data      = up_data_rd;
 	//$display("rd %08x %08x", addr, data);
 endtask
 

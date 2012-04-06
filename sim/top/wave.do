@@ -29,12 +29,27 @@ add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/time_reg_ns
 add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rtc/time_acc_48s_inc
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/time_reg_sec
 add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rtc/rst
 add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rtc/adj_ld
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/adj_cnt
 add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rtc/time_adj
 add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rx_tsu/rst
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rx_tsu/q_rst
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_rx_tsu/ptp_found
+add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rx_tsu/ptp_infor
+add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_rx_tsu/q_rdusedw
+add wave -noupdate -format Literal -radix unsigned /ha1588_tb/NIC_DRV_RX_BFM/num_rx
+add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_tx_tsu/rst
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_tx_tsu/q_rst
+add wave -noupdate -format Logic /ha1588_tb/PTP_HA_DUT/u_tx_tsu/ptp_found
+add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_tx_tsu/ptp_infor
+add wave -noupdate -format Literal /ha1588_tb/PTP_HA_DUT/u_tx_tsu/q_rdusedw
+add wave -noupdate -format Literal -radix unsigned /ha1588_tb/NIC_DRV_TX_BFM/num_tx
+add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1082162 ps} 0}
+WaveRestoreCursors {{Cursor 1} {3718000 ps} 0}
 configure wave -namecolwidth 333
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -49,4 +64,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {10500 ns}
+WaveRestoreZoom {0 ps} {2026775 ps}
