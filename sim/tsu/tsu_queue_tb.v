@@ -56,7 +56,7 @@ tsu DUT_RX
     .gmii_data(gmii_rxdata),
 
     .rtc_timer_clk(rtc_timer_clk),
-    .rtc_timer_in(rtc_timer_in[31:0]),
+    .rtc_timer_in(rtc_timer_in[35:0]),
 
     .q_rst(rst),
     .q_rd_clk(q_rd_clk),
@@ -82,7 +82,7 @@ tsu DUT_TX
     .gmii_data(gmii_txdata),
 
     .rtc_timer_clk(rtc_timer_clk),
-    .rtc_timer_in(rtc_timer_in[31:0]),
+    .rtc_timer_in(rtc_timer_in[35:0]),
 
     .q_rst(rst),
     .q_rd_clk(q_rd_clk),
