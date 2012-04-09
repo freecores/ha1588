@@ -27,16 +27,16 @@ wire [31:0] rtc_adj_ld_data;
 wire [39:0] rtc_period_adj;
 wire [37:0] rtc_time_reg_ns_val;
 wire [47:0] rtc_time_reg_sec_val;
-wire [31:0] rtc_time_reg_val = {rtc_time_reg_sec_val[1:0],rtc_time_reg_ns_val[37:8]};  // 4.000000000 sec
+wire [35:0] rtc_time_reg_val = {rtc_time_reg_sec_val[5:0],rtc_time_reg_ns_val[37:8]};  // 64.000,000,000 sec
 
 wire rx_q_rst, rx_q_clk;
 wire rx_q_rd_en;
 wire [ 7:0] rx_q_stat;
-wire [55:0] rx_q_data;
+wire [63:0] rx_q_data;
 wire tx_q_rst, tx_q_clk;
 wire tx_q_rd_en;
 wire [ 7:0] tx_q_stat;
-wire [55:0] tx_q_data;
+wire [63:0] tx_q_data;
 
 rgs u_rgs
 (

@@ -26,13 +26,13 @@ module rgs (
   output        rx_q_rd_clk_out,
   output        rx_q_rd_en_out,
   input  [ 7:0] rx_q_stat_in,
-  input  [55:0] rx_q_data_in,
+  input  [63:0] rx_q_data_in,
   // tx tsu interface
   output        tx_q_rst_out,
   output        tx_q_rd_clk_out,
   output        tx_q_rd_en_out,
   input  [ 7:0] tx_q_stat_in,
-  input  [55:0] tx_q_data_in
+  input  [63:0] tx_q_data_in
 );
 
 parameter const_00 = 8'h00;
@@ -141,9 +141,9 @@ end
 // read registers
 reg  [37:0] time_reg_ns_int;
 reg  [47:0] time_reg_sec_int;
-reg  [55:0] rx_q_data_int;
+reg  [63:0] rx_q_data_int;
 reg  [ 7:0] rx_q_stat_int;
-reg  [55:0] tx_q_data_int;
+reg  [63:0] tx_q_data_int;
 reg  [ 7:0] tx_q_stat_int;
 reg         time_ok;
 
@@ -169,10 +169,10 @@ always @(posedge clk) begin
   if (rd_in && cs_44) data_out_reg <=         time_reg_sec_int[31: 0];
   if (rd_in && cs_48) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
   if (rd_in && cs_4c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
-  if (rd_in && cs_50) data_out_reg <= { 8'd0, rx_q_data_int[55:32]};
-  if (rd_in && cs_54) data_out_reg <=         rx_q_data_int[31: 0];
-  if (rd_in && cs_58) data_out_reg <= { 8'd0, tx_q_data_int[55:32]};
-  if (rd_in && cs_5c) data_out_reg <=         tx_q_data_int[31: 0];
+  if (rd_in && cs_50) data_out_reg <= rx_q_data_int[63:32];
+  if (rd_in && cs_54) data_out_reg <= rx_q_data_int[31: 0];
+  if (rd_in && cs_58) data_out_reg <= tx_q_data_int[63:32];
+  if (rd_in && cs_5c) data_out_reg <= tx_q_data_int[31: 0];
 end
 assign data_out = data_out_reg;
 

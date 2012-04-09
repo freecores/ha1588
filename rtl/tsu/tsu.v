@@ -8,13 +8,13 @@ module tsu (
     input [7:0] gmii_data,
     
     input        rtc_timer_clk,
-    input [31:0] rtc_timer_in,  // timeStamp1s_2bit + timeStamp1ns_30bit
+    input [35:0] rtc_timer_in,  // timeStamp1s_6bit + timeStamp1ns_30bit
 
     input         q_rst,
     input         q_rd_clk,
     input         q_rd_en,
     output [ 7:0] q_rd_stat,
-    output [55:0] q_rd_data  // null_4bit + seqId_16bit + msgId_4bit + timeStamp1s_2bit + timeStamp1ns_30bit
+    output [63:0] q_rd_data  // seqId_16bit + msgId_4bit + null_8bit + timeStamp1s_6bit + timeStamp1ns_30bit
 );
 
 // buffer gmii input
@@ -60,10 +60,10 @@ always @(posedge rst or posedge rtc_timer_clk) begin
     ts_req_d3 <= ts_req_d2;
   end
 end
-reg [31:0] rtc_time_stamp;
+reg [35:0] rtc_time_stamp;
 always @(posedge rst or posedge rtc_timer_clk) begin
   if (rst)
-    rtc_time_stamp <= 32'd0;
+    rtc_time_stamp <= 36'd0;
   else 
     if (ts_req_d2 & !ts_req_d3)
       rtc_time_stamp <= rtc_timer_in;
@@ -90,10 +90,10 @@ always @(posedge rst or posedge gmii_clk) begin
     ts_ack_d3 <= ts_ack_d2;
   end
 end
-reg [31:0] gmii_time_stamp;
+reg [35:0] gmii_time_stamp;
 always @(posedge rst or posedge gmii_clk) begin
   if (rst) begin
-    gmii_time_stamp <= 32'd0;
+    gmii_time_stamp <= 36'd0;
     ts_ack_clr      <= 1'b0;
   end
   else begin
@@ -162,7 +162,7 @@ end
 // ptp packet parser here
 // works at 1/4 gmii_clk frequency, needs multicycle timing constraint
 wire        ptp_found;
-wire [51:0] ptp_infor;
+wire [19:0] ptp_infor;
 ptp_parser parser(
   .clk(gmii_clk),
   .rst(rst),
@@ -171,7 +171,6 @@ ptp_parser parser(
   .int_sop(int_sop),
   .int_eop(int_eop),
   .int_mod(int_mod),
-  .sop_time(gmii_time_stamp),
   .ptp_found(ptp_found),
   .ptp_infor(ptp_infor)
 );
@@ -179,7 +178,7 @@ ptp_parser parser(
 // ptp time stamp dcfifo
 wire q_wr_clk = gmii_clk;
 wire q_wr_en = ptp_found;
-wire [55:0] q_wr_data = {4'd0, ptp_infor};
+wire [63:0] q_wr_data = {ptp_infor, 8'd0, gmii_time_stamp};  // 20+8+36 bit
 wire [3:0] q_wrusedw;
 wire [3:0] q_rdusedw;
 
@@ -187,12 +186,12 @@ ptp_queue queue(
   .aclr(q_rst),
 
   .wrclk(q_wr_clk),
-  .wrreq(q_wr_en && q_wrusedw<=15),
+  .wrreq(q_wr_en && q_wrusedw<=15),  // write with overflow protection
   .data(q_wr_data),
   .wrusedw(q_wrusedw),
 
   .rdclk(q_rd_clk),
-  .rdreq(q_rd_en && q_rdusedw>=1),
+  .rdreq(q_rd_en && q_rdusedw>= 1),  // read with underflow protection
   .q(q_rd_data),
   .rdusedw(q_rdusedw)
 );
