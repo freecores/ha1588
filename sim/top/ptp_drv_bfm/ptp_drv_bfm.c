@@ -135,6 +135,11 @@ int ptp_drv_bfm_c(double fw_delay)
       cpu_addr_i = 0x00000000;
       cpu_data_i = 0x400;
       cpu_wr(cpu_addr_i, cpu_data_i);
+      do {
+        cpu_addr_i = 0x00000000;
+        cpu_rd(cpu_addr_i, &cpu_data_o);
+        //printf("%08x\n", (cpu_data_o & 0x1));
+      } while ((cpu_data_o & 0x400) == 0x0);
       cpu_addr_i = 0x00000050;
       cpu_rd(cpu_addr_i, &cpu_data_o);
       printf("\nRx stamp: \n%08x\n", cpu_data_o);
@@ -158,6 +163,11 @@ int ptp_drv_bfm_c(double fw_delay)
       cpu_addr_i = 0x00000000;
       cpu_data_i = 0x100;
       cpu_wr(cpu_addr_i, cpu_data_i);
+      do {
+        cpu_addr_i = 0x00000000;
+        cpu_rd(cpu_addr_i, &cpu_data_o);
+        //printf("%08x\n", (cpu_data_o & 0x1));
+      } while ((cpu_data_o & 0x100) == 0x0);
       cpu_addr_i = 0x00000058;
       cpu_rd(cpu_addr_i, &cpu_data_o);
       printf("\nTx stamp: \n%08x\n", cpu_data_o);

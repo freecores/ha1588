@@ -146,10 +146,12 @@ reg  [ 7:0] rx_q_stat_int;
 reg  [63:0] tx_q_data_int;
 reg  [ 7:0] tx_q_stat_int;
 reg         time_ok;
+reg         rxqu_ok;
+reg         txqu_ok;
 
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
-  if (rd_in && cs_00) data_out_reg <= {reg_00[31:1], time_ok};
+  if (rd_in && cs_00) data_out_reg <= {reg_00[31:12], reg_00[11], rxqu_ok, reg_00[9], txqu_ok, reg_00[ 7: 1], time_ok};
   if (rd_in && cs_04) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
   if (rd_in && cs_08) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
   if (rd_in && cs_0c) data_out_reg <= reg_0c;
@@ -269,12 +271,23 @@ always @(posedge clk) begin
   rxq_rst_d3 <= rxq_rst_d2;
 end
 
-reg rxqu_rd_d1, rxqu_rd_d2, rxqu_rd_d3;
+reg rxqu_rd_d1, rxqu_rd_d2, rxqu_rd_d3, rxqu_rd_d4, rxqu_rd_d5;
 assign rx_q_rd_en_out = rxqu_rd_d2 && !rxqu_rd_d3;
+wire   rx_q_rd_req    = rxqu_rd_d2 && !rxqu_rd_d3;
+wire   rx_q_rd_ack    = rxqu_rd_d4 && !rxqu_rd_d5;
 always @(posedge clk) begin
   rxqu_rd_d1 <= rxqu_rd;
   rxqu_rd_d2 <= rxqu_rd_d1;
   rxqu_rd_d3 <= rxqu_rd_d2;
+  rxqu_rd_d4 <= rxqu_rd_d3;
+  rxqu_rd_d5 <= rxqu_rd_d4;
+end
+
+always @(posedge clk) begin
+  if (rx_q_rd_ack)
+    rxqu_ok <= 1'b1;
+  else if (rx_q_rd_req)
+    rxqu_ok <= 1'b0;
 end
 
 always @(posedge clk) begin
@@ -293,12 +306,23 @@ always @(posedge clk) begin
   txq_rst_d3 <= txq_rst_d2;
 end
 
-reg txqu_rd_d1, txqu_rd_d2, txqu_rd_d3;
+reg txqu_rd_d1, txqu_rd_d2, txqu_rd_d3, txqu_rd_d4, txqu_rd_d5;
 assign tx_q_rd_en_out = txqu_rd_d2 && !txqu_rd_d3;
+wire   tx_q_rd_req    = txqu_rd_d2 && !txqu_rd_d3;
+wire   tx_q_rd_ack    = txqu_rd_d4 && !txqu_rd_d5;
 always @(posedge clk) begin
   txqu_rd_d1 <= txqu_rd;
   txqu_rd_d2 <= txqu_rd_d1;
   txqu_rd_d3 <= txqu_rd_d2;
+  txqu_rd_d4 <= txqu_rd_d3;
+  txqu_rd_d5 <= txqu_rd_d4;
+end
+
+always @(posedge clk) begin
+  if (tx_q_rd_ack)
+    txqu_ok <= 1'b1;
+  else if (tx_q_rd_req)
+    txqu_ok <= 1'b0;
 end
 
 always @(posedge clk) begin
