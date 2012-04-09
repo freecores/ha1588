@@ -151,6 +151,10 @@ set_false_path -from [get_keepers {*delayed_wrptr_g*}] -to [get_keepers {*rs_dgw
 # Set Multicycle Path
 #**************************************************************
 
+set_multicycle_path -from [get_registers {tsu:u_rx_tsu|ptp_parser:parser|*}] -to [get_registers {tsu:u_rx_tsu|ptp_parser:parser|*}] -setup -end 4
+set_multicycle_path -from [get_registers {tsu:u_rx_tsu|ptp_parser:parser|*}] -to [get_registers {tsu:u_rx_tsu|ptp_parser:parser|*}] -hold  -end 3
+set_multicycle_path -from [get_registers {tsu:u_tx_tsu|ptp_parser:parser|*}] -to [get_registers {tsu:u_tx_tsu|ptp_parser:parser|*}] -setup -end 4
+set_multicycle_path -from [get_registers {tsu:u_tx_tsu|ptp_parser:parser|*}] -to [get_registers {tsu:u_tx_tsu|ptp_parser:parser|*}] -hold  -end 3
 
 
 #**************************************************************

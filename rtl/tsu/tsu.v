@@ -159,6 +159,30 @@ always @(posedge rst or posedge gmii_clk) begin
   end
 end
 
+reg [31:0] int_data_d1;
+reg        int_valid_d1;
+reg        int_sop_d1;
+reg        int_eop_d1;
+reg [ 1:0] int_mod_d1;
+always @(posedge rst or posedge gmii_clk) begin
+  if (rst) begin
+    int_data_d1  <= 32'h00000000;
+    int_valid_d1 <= 1'b0;
+    int_sop_d1   <= 1'b0;
+    int_eop_d1   <= 1'b0;
+    int_mod_d1   <= 2'b00;
+  end
+  else begin
+    if (int_valid) begin
+      int_data_d1  <= int_data;
+      int_mod_d1   <= int_mod;
+    end
+      int_valid_d1 <= int_valid;
+      int_sop_d1   <= int_sop;
+      int_eop_d1   <= int_eop;
+  end
+end
+
 // ptp packet parser here
 // works at 1/4 gmii_clk frequency, needs multicycle timing constraint
 wire        ptp_found;
@@ -166,18 +190,18 @@ wire [19:0] ptp_infor;
 ptp_parser parser(
   .clk(gmii_clk),
   .rst(rst),
-  .int_data(int_data),
-  .int_valid(int_valid),
-  .int_sop(int_sop),
-  .int_eop(int_eop),
-  .int_mod(int_mod),
+  .int_data(int_data_d1),
+  .int_valid(int_valid_d1),
+  .int_sop(int_sop_d1),
+  .int_eop(int_eop_d1),
+  .int_mod(int_mod_d1),
   .ptp_found(ptp_found),
   .ptp_infor(ptp_infor)
 );
 
 // ptp time stamp dcfifo
 wire q_wr_clk = gmii_clk;
-wire q_wr_en = ptp_found;
+wire q_wr_en = ptp_found && int_eop_d1;
 wire [63:0] q_wr_data = {ptp_infor, 8'd0, gmii_time_stamp};  // 20+8+36 bit
 wire [3:0] q_wrusedw;
 wire [3:0] q_rdusedw;
