@@ -15,9 +15,12 @@ module rtc (
   input [31:0] adj_ld_data,
   input [39:0] period_adj,  // 39:32 ns, 31:0 ns_fraction
 
-  // time output	  
+  // time output: for internal with ns fraction
   output [37:0] time_reg_ns,  // 37:8 ns, 7:0 ns_fraction
-  output [47:0] time_reg_sec  // 47:0 sec 
+  output [47:0] time_reg_sec, // 47:0 sec
+  // time output: for external with ptp standard
+  output [31:0] time_ptp_ns,  // 31:0 ns
+  output [47:0] time_ptp_sec  // 47:0 sec
 );
 
 reg  [39:0] period_fix;  // 39:32 ns, 31:0 ns_fraction
@@ -109,5 +112,8 @@ end
 // time output (48bit_s + 30bit_ns + 8bit_ns_fraction)
 assign time_reg_ns  = time_acc_30n_08f;
 assign time_reg_sec = time_acc_48s;
+// time output (48bit_s + 32bit_ns)
+assign time_ptp_ns  = {2'b00, time_acc_30n_08f[37:8]};
+assign time_ptp_sec = time_acc_48s;
 
 endmodule

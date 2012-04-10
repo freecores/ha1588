@@ -8,13 +8,13 @@ module tsu (
     input [7:0] gmii_data,
     
     input        rtc_timer_clk,
-    input [35:0] rtc_timer_in,  // timeStamp1s_6bit + timeStamp1ns_30bit
+    input [79:0] rtc_timer_in,  // timeStamp1s_48bit + timeStamp1ns_32bit
 
     input         q_rst,
     input         q_rd_clk,
     input         q_rd_en,
     output [ 7:0] q_rd_stat,
-    output [63:0] q_rd_data  // seqId_16bit + msgId_4bit + null_8bit + timeStamp1s_6bit + timeStamp1ns_30bit
+    output [63:0] q_rd_data  // seqId_16bit + msgId_4bit + null_8bit + timeStamp1s_4bit + timeStamp1ns_32bit
 );
 
 // buffer gmii input
@@ -66,7 +66,7 @@ always @(posedge rst or posedge rtc_timer_clk) begin
     rtc_time_stamp <= 36'd0;
   else 
     if (ts_req_d2 & !ts_req_d3)
-      rtc_time_stamp <= rtc_timer_in;
+      rtc_time_stamp <= rtc_timer_in[35:0];  // 16.000,000,000 sec
 end
 reg ts_ack, ts_ack_clr;
 always @(posedge ts_ack_clr or posedge rtc_timer_clk) begin

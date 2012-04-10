@@ -61,6 +61,8 @@ ha1588 PTP_HA_DUT (
   .data_out(up_data_rd),
 
   .rtc_clk(rtc_clk),
+  .rtc_time_ptp_ns(),
+  .rtc_time_ptp_sec(),
 
   .rx_gmii_clk(rx_gmii_clk),
   .rx_gmii_ctrl(rx_gmii_ctrl),

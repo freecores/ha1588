@@ -14,7 +14,7 @@ reg  [79:0] rtc_timer_in;
 reg         q_rd_clk;
 reg         q_rd_en;
 wire [ 7:0] q_rd_stat;
-wire [55:0] q_rd_data;
+wire [63:0] q_rd_data;
 
 initial begin
   // emulate the hardware behavior when power-up
@@ -56,7 +56,7 @@ tsu DUT_RX
     .gmii_data(gmii_rxdata),
 
     .rtc_timer_clk(rtc_timer_clk),
-    .rtc_timer_in(rtc_timer_in[35:0]),
+    .rtc_timer_in(rtc_timer_in),
 
     .q_rst(rst),
     .q_rd_clk(q_rd_clk),
@@ -82,7 +82,7 @@ tsu DUT_TX
     .gmii_data(gmii_txdata),
 
     .rtc_timer_clk(rtc_timer_clk),
-    .rtc_timer_in(rtc_timer_in[35:0]),
+    .rtc_timer_in(rtc_timer_in),
 
     .q_rst(rst),
     .q_rd_clk(q_rd_clk),

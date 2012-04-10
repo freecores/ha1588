@@ -7,7 +7,9 @@ module ha1588 (
   input  [31:0] data_in,
   output [31:0] data_out,
 
-  input rtc_clk,
+  input         rtc_clk,
+  output [31:0] rtc_time_ptp_ns,
+  output [47:0] rtc_time_ptp_sec,
 
   input       rx_gmii_clk,
   input       rx_gmii_ctrl,
@@ -27,7 +29,7 @@ wire [31:0] rtc_adj_ld_data;
 wire [39:0] rtc_period_adj;
 wire [37:0] rtc_time_reg_ns_val;
 wire [47:0] rtc_time_reg_sec_val;
-wire [35:0] rtc_time_reg_val = {rtc_time_reg_sec_val[3:0], 2'b00, rtc_time_reg_ns_val[37:8]};  // 16.000,000,000 sec
+wire [79:0] rtc_time_ptp_val = {rtc_time_ptp_sec[47:0], rtc_time_ptp_ns[31:0]};
 
 wire rx_q_rst, rx_q_clk;
 wire rx_q_rd_en;
@@ -86,7 +88,9 @@ rtc u_rtc
   .adj_ld_data(rtc_adj_ld_data),
   .period_adj(rtc_period_adj),
   .time_reg_ns(rtc_time_reg_ns_val),
-  .time_reg_sec(rtc_time_reg_sec_val)
+  .time_reg_sec(rtc_time_reg_sec_val),
+  .time_ptp_ns(rtc_time_ptp_ns),
+  .time_ptp_sec(rtc_time_ptp_sec)
 );
 
 tsu u_rx_tsu
@@ -96,7 +100,7 @@ tsu u_rx_tsu
   .gmii_ctrl(rx_gmii_ctrl),
   .gmii_data(rx_gmii_data),
   .rtc_timer_clk(rtc_clk),
-  .rtc_timer_in(rtc_time_reg_val),
+  .rtc_timer_in(rtc_time_ptp_val),
   .q_rst(rx_q_rst),
   .q_rd_clk(rx_q_clk),
   .q_rd_en(rx_q_rd_en),
@@ -111,7 +115,7 @@ tsu u_tx_tsu
   .gmii_ctrl(tx_gmii_ctrl),
   .gmii_data(tx_gmii_data),
   .rtc_timer_clk(rtc_clk),
-  .rtc_timer_in(rtc_time_reg_val),
+  .rtc_timer_in(rtc_time_ptp_val),
   .q_rst(tx_q_rst),
   .q_rd_clk(tx_q_clk),
   .q_rd_en(tx_q_rd_en),
