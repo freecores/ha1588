@@ -32,6 +32,7 @@ add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/int_mod_d1
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/int_data_d1
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_vlan
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_mpls
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_ipv4
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_ipv6
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/bypass_udp
@@ -53,9 +54,10 @@ add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/q_wr_data
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/q_wrusedw
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/BFM_RX/num_rx
+add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/rx_ptp_event_cnt
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {76206000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {535600 ps} 0}
 configure wave -namecolwidth 188
 configure wave -valuecolwidth 165
 configure wave -justifyvalue left
@@ -70,4 +72,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {317931600 ps}
+WaveRestoreZoom {0 ps} {389986800 ps}

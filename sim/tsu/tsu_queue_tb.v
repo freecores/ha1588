@@ -119,6 +119,23 @@ gmii_tx_bfm BFM_TX
     .gmii_txdata(gmii_txdata)
   );
 
+integer rx_ptp_event_cnt;
+initial begin
+    rx_ptp_event_cnt = 0;
+  forever @(posedge DUT_RX.q_wr_en) begin
+    rx_ptp_event_cnt = rx_ptp_event_cnt + 1;
+    $display("%d", BFM_RX.num_rx);
+  end
+end
+
+integer tx_ptp_event_cnt;
+initial begin
+    tx_ptp_event_cnt = 0;
+  forever @(posedge DUT_TX.q_wr_en) begin
+    tx_ptp_event_cnt = tx_ptp_event_cnt + 1;
+    //$display("%d", BFM_TX.num_tx);
+  end
+end
 
 endmodule
 
