@@ -59,6 +59,10 @@ parameter const_50 = 8'h50;
 parameter const_54 = 8'h54;
 parameter const_58 = 8'h58;
 parameter const_5c = 8'h5C;
+parameter const_60 = 8'h60;
+parameter const_64 = 8'h64;
+parameter const_68 = 8'h68;
+parameter const_6c = 8'h6C;
 
 wire cs_00 = (addr_in[7:2]==const_00[7:2])? 1'b1: 1'b0;
 wire cs_04 = (addr_in[7:2]==const_04[7:2])? 1'b1: 1'b0;
@@ -84,9 +88,13 @@ wire cs_50 = (addr_in[7:2]==const_50[7:2])? 1'b1: 1'b0;
 wire cs_54 = (addr_in[7:2]==const_54[7:2])? 1'b1: 1'b0;
 wire cs_58 = (addr_in[7:2]==const_58[7:2])? 1'b1: 1'b0;
 wire cs_5c = (addr_in[7:2]==const_5c[7:2])? 1'b1: 1'b0;
+wire cs_60 = (addr_in[7:2]==const_60[7:2])? 1'b1: 1'b0;
+wire cs_64 = (addr_in[7:2]==const_64[7:2])? 1'b1: 1'b0;
+wire cs_68 = (addr_in[7:2]==const_68[7:2])? 1'b1: 1'b0;
+wire cs_6c = (addr_in[7:2]==const_6c[7:2])? 1'b1: 1'b0;
 
-reg [31:0] reg_00;  // ctrl 12 bit
-reg [31:0] reg_04;  // qsta 16 bit
+reg [31:0] reg_00;  // ctrl 5 bit
+reg [31:0] reg_04;  // 
 reg [31:0] reg_08;  // 
 reg [31:0] reg_0c;  // 
 reg [31:0] reg_10;  // tout 16 s
@@ -105,10 +113,14 @@ reg [31:0] reg_40;  // tmin 16 s
 reg [31:0] reg_44;  // tmin 32 s
 reg [31:0] reg_48;  // tmin 30 ns
 reg [31:0] reg_4c;  // tmin  8 nsf
-reg [31:0] reg_50;  // rxqu 24 bit
-reg [31:0] reg_54;  // rxqu 32 bit
-reg [31:0] reg_58;  // txqu 24 bit
-reg [31:0] reg_5c;  // txqu 32 bit
+reg [31:0] reg_50;  // ctrl  4 bit
+reg [31:0] reg_54;  // qsta  8 bit
+reg [31:0] reg_58;  // qsta  8 bit
+reg [31:0] reg_5c;  // 
+reg [31:0] reg_60;  // rxqu 32 bit
+reg [31:0] reg_64;  // rxqu 32 bit
+reg [31:0] reg_68;  // txqu 32 bit
+reg [31:0] reg_6c;  // txqu 32 bit
 
 // write registers
 always @(posedge clk) begin
@@ -136,6 +148,10 @@ always @(posedge clk) begin
   if (wr_in && cs_54) reg_54 <= data_in;
   if (wr_in && cs_58) reg_58 <= data_in;
   if (wr_in && cs_5c) reg_5c <= data_in;
+  if (wr_in && cs_60) reg_60 <= data_in;
+  if (wr_in && cs_64) reg_64 <= data_in;
+  if (wr_in && cs_68) reg_68 <= data_in;
+  if (wr_in && cs_6c) reg_6c <= data_in;
 end
 
 // read registers
@@ -151,9 +167,9 @@ reg         txqu_ok;
 
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
-  if (rd_in && cs_00) data_out_reg <= {reg_00[31:12], reg_00[11], rxqu_ok, reg_00[9], txqu_ok, reg_00[ 7: 1], time_ok};
-  if (rd_in && cs_04) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
-  if (rd_in && cs_08) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_00) data_out_reg <= {reg_00[31:1 ], time_ok};
+  if (rd_in && cs_04) data_out_reg <= reg_04;
+  if (rd_in && cs_08) data_out_reg <= reg_08;
   if (rd_in && cs_0c) data_out_reg <= reg_0c;
   if (rd_in && cs_10) data_out_reg <= reg_10;
   if (rd_in && cs_14) data_out_reg <= reg_14;
@@ -171,18 +187,18 @@ always @(posedge clk) begin
   if (rd_in && cs_44) data_out_reg <=         time_reg_sec_int[31: 0];
   if (rd_in && cs_48) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
   if (rd_in && cs_4c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
-  if (rd_in && cs_50) data_out_reg <= rx_q_data_int[63:32];
-  if (rd_in && cs_54) data_out_reg <= rx_q_data_int[31: 0];
-  if (rd_in && cs_58) data_out_reg <= tx_q_data_int[63:32];
-  if (rd_in && cs_5c) data_out_reg <= tx_q_data_int[31: 0];
+  if (rd_in && cs_50) data_out_reg <= {reg_50[31: 4], reg_50[ 3], rxqu_ok, reg_50[ 1], txqu_ok};
+  if (rd_in && cs_54) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_58) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_5c) data_out_reg <= reg_5c;
+  if (rd_in && cs_60) data_out_reg <= rx_q_data_int[63:32];
+  if (rd_in && cs_64) data_out_reg <= rx_q_data_int[31: 0];
+  if (rd_in && cs_68) data_out_reg <= tx_q_data_int[63:32];
+  if (rd_in && cs_6c) data_out_reg <= tx_q_data_int[31: 0];
 end
 assign data_out = data_out_reg;
 
-// register mapping
-wire rxq_rst = reg_00[11];
-wire rxqu_rd = reg_00[10];
-wire txq_rst = reg_00[ 9];
-wire txqu_rd = reg_00[ 8];
+// register mapping: RTC
 //wire       = reg_00[ 7];
 //wire       = reg_00[ 6];
 //wire       = reg_00[ 5];
@@ -197,6 +213,15 @@ assign period_out         [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
 assign time_acc_modulo_out[37:0] = {reg_28[29: 0], reg_2c[ 7: 0]};
 assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
 assign period_adj_out     [39:0] = {reg_38[ 7: 0], reg_3c[31: 0]};
+// register mapping: TSU
+//wire       = reg_50[ 7];
+//wire       = reg_50[ 6];
+//wire       = reg_50[ 5];
+//wire       = reg_50[ 4];
+wire rxq_rst = reg_50[ 3];
+wire rxqu_rd = reg_50[ 2];
+wire txq_rst = reg_50[ 1];
+wire txqu_rd = reg_50[ 0];
 
 // real time clock
 reg rtc_rst_s1, rtc_rst_s2, rtc_rst_s3;
