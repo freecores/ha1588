@@ -1,5 +1,5 @@
 /*
- * $tsu_queue_tb.v
+ * tsu_queue_tb.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *

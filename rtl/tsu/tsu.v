@@ -1,5 +1,5 @@
 /*
- * $tsu.v
+ * tsu.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *

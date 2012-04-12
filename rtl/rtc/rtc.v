@@ -1,5 +1,5 @@
 /*
- * $rtc.v
+ * rtc.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
@@ -30,10 +30,10 @@ module rtc (
   // 2. frequency adjustment: frequency set up for drift compensation
   input period_ld,
   input [39:0] period_in,        // 39:32 ns, 31:0 ns_fraction
-  input [37:0] time_acc_modulo,  // 37: 8 ns,  7:0 ns_fraction
   // 3. precise time adjustment: small time difference adjustment with a time mark
   input adj_ld,
   input [31:0] adj_ld_data,
+  output reg   adj_ld_done,
   input [39:0] period_adj,  // 39:32 ns, 31:0 ns_fraction
 
   // time output: for internal with ns fraction
@@ -44,15 +44,18 @@ module rtc (
   output [47:0] time_ptp_sec  // 47:0 sec
 );
 
+parameter time_acc_modulo = 38'd256000000000;
+
 reg  [39:0] period_fix;  // 39:32 ns, 31:0 ns_fraction
 reg  [31:0] adj_cnt;
 reg  [39:0] time_adj;    // 39:32 ns, 31:0 ns_fraction
 // frequency and small time difference adjustment registers
 always @(posedge rst or posedge clk) begin
   if (rst) begin
-    period_fix <= period_fix;  //40'd0;
-    adj_cnt    <= 32'hffffffff;
-    time_adj   <= time_adj;    //40'd0;
+    period_fix  <= period_fix;  //40'd0;
+    adj_cnt     <= 32'hffffffff;
+    time_adj    <= time_adj;    //40'd0;
+    adj_ld_done <= 1'b0;
   end
   else begin
     if (period_ld)  // load period adjustment
@@ -71,6 +74,11 @@ always @(posedge rst or posedge clk) begin
       time_adj <= period_fix + period_adj;
     else
       time_adj <= period_fix + 0;
+
+    if (adj_cnt==32'hffffffff)
+      adj_ld_done <= 1'b1;
+    else
+      adj_ld_done <= 1'b0;
   end
 end
 
@@ -114,9 +122,7 @@ always @(posedge rst or posedge clk) begin
 
       if (time_acc_48s_inc)
         time_acc_48s_inc <= 1'b0;
-      else if (time_acc_modulo == 38'd0)
-        time_acc_48s_inc <= 1'b0;
-      else if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} + {22'd0, time_adj_08n_08f} >= time_acc_modulo)
+      else if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} + {22'd0, time_adj_08n_08f} >= time_acc_modulo)  // TODO: period_adj
         time_acc_48s_inc <= 1'b1;
       else
         time_acc_48s_inc <= 1'b0;

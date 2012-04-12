@@ -1,5 +1,5 @@
 /*
- * $ptp_drv_bfm.v
+ * ptp_drv_bfm.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *

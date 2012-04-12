@@ -11,7 +11,6 @@ add wave -noupdate -divider {freq adjustment}
 add wave -noupdate -format Logic /rtc_timer_tb/period_ld
 add wave -noupdate -format Literal /rtc_timer_tb/period_in
 add wave -noupdate -divider {1s modulo}
-add wave -noupdate -format Literal /rtc_timer_tb/time_acc_modulo
 add wave -noupdate -divider {time adjustment}
 add wave -noupdate -format Logic /rtc_timer_tb/adj_ld
 add wave -noupdate -format Literal /rtc_timer_tb/adj_ld_data
@@ -23,6 +22,7 @@ add wave -noupdate -divider {New Divider}
 add wave -noupdate -divider {INTERNAL Signals}
 add wave -noupdate -divider {precise time control}
 add wave -noupdate -format Literal -radix hexadecimal /rtc_timer_tb/DUT/adj_cnt
+add wave -noupdate -format Logic /rtc_timer_tb/DUT/adj_ld_done
 add wave -noupdate -format Literal -radix hexadecimal /rtc_timer_tb/DUT/time_adj
 add wave -noupdate -divider Delta-Sigma
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_08n_32f
@@ -30,7 +30,6 @@ add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_08n_08f
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_00n_24f
 add wave -noupdate -divider {WATCHPOINT Signals}
 add wave -noupdate -divider {ns and sec}
-add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_acc_modulo_ns_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns__delta
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_sec_in_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns_in_
@@ -40,7 +39,6 @@ add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/period_ns_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/period_adj_ns_
 add wave -noupdate -divider {ns fraction}
-add wave -noupdate -format Literal /rtc_timer_tb/time_acc_modulo_ns_f
 add wave -noupdate -format Literal /rtc_timer_tb/time_reg_ns_in_f
 add wave -noupdate -format Literal /rtc_timer_tb/time_reg_ns_f
 add wave -noupdate -format Literal /rtc_timer_tb/period_ns_f
@@ -49,7 +47,7 @@ add wave -noupdate -divider {New Divider}
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {533 ns} 0}
+WaveRestoreCursors {{Cursor 1} {476 ns} 0}
 configure wave -namecolwidth 222
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -64,4 +62,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {476 ns} {632 ns}
+WaveRestoreZoom {0 ns} {2100 ns}

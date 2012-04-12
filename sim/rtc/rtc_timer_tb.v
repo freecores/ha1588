@@ -1,5 +1,5 @@
 /*
- * $rtc_timer_tb.v
+ * rtc_timer_tb.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
@@ -25,11 +25,11 @@ module rtc_timer_tb  ;
  
   reg rst;
   reg clk;
+  wire         adj_ld_done;
   wire [37:0]  time_reg_ns;
   wire [47:0]  time_reg_sec;
   reg period_ld;
   reg [39:0]  period_in;
-  reg [37:0]  time_acc_modulo;
   reg adj_ld;
   reg [31:0]  adj_ld_data;
   reg [39:0]  period_adj;
@@ -45,12 +45,14 @@ module rtc_timer_tb  ;
       .time_reg_sec_in (time_reg_sec_in ) ,
       .time_reg_ns (time_reg_ns ) ,
       .time_reg_sec (time_reg_sec ) ,
+      .time_ptp_ns ( ) ,
+      .time_ptp_sec ( ) ,
       .period_ld (period_ld ) ,
       .period_in (period_in ) ,
-      .time_acc_modulo (time_acc_modulo ) ,
       .adj_ld (adj_ld ) ,
       .period_adj (period_adj ) ,
-      .adj_ld_data (adj_ld_data ) ); 
+      .adj_ld_data (adj_ld_data ) ,
+      .adj_ld_done ( ) ); 
 
 
 initial begin 
@@ -81,7 +83,6 @@ initial begin
 	period_ld        =  1'b0;
 	period_in[39:32] =  8'h00;        // ns
 	period_in[31: 0] = 32'h00000000;  // ns fraction
-	time_acc_modulo  = 38'd256_000000000;
 	// time load
 	time_ld              =  1'b0;
 	time_reg_ns_in[37:8] = 30'd0;          // ns
@@ -142,7 +143,6 @@ initial begin
 end
 
 // sec+ns watchpoint
-wire [29:0] time_acc_modulo_ns_ = time_acc_modulo[37:8];
 wire [47:0] time_reg_sec_in_    = time_reg_sec_in[47:0];
 wire [29:0] time_reg_ns_in_     = time_reg_ns_in[37:8];
 wire [47:0] time_reg_sec_       = time_reg_sec[47:0];
@@ -151,7 +151,6 @@ wire [ 7:0] period_ns_          = period_in[39:32];
 wire [ 7:0] period_adj_ns_      = period_adj[39:32];
 wire        time_reg_sec_inc_   = DUT.time_acc_48s_inc;
 // ns fraction watchpoint
-wire [ 7:0] time_acc_modulo_ns_f = time_acc_modulo[7:0];
 wire [ 7:0] time_reg_ns_in_f     = time_reg_ns_in[7:0];
 wire [ 7:0] time_reg_ns_f        = time_reg_ns[7:0];
 wire [31:0] period_ns_f          = period_in[31:0];
@@ -165,7 +164,7 @@ always @(posedge clk) begin
 	time_reg_ns__d1  <= time_reg_ns_;
 end
 wire [29:0] time_reg_ns__delta = (time_reg_sec__d1!=time_reg_sec_)?
-				(time_acc_modulo_ns_-(time_reg_ns__d1-time_reg_ns_)):
+				(DUT.time_acc_modulo/256-(time_reg_ns__d1-time_reg_ns_)):
 				(time_reg_ns_-time_reg_ns__d1);
 
 // Delta-Sigma circuit watchpoint

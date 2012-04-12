@@ -1,5 +1,5 @@
 /*
- * $ha1588.v
+ * ha1588.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
@@ -45,7 +45,6 @@ wire rtc_time_ld, rtc_period_ld, rtc_adj_ld;
 wire [37:0] rtc_time_reg_ns;
 wire [47:0] rtc_time_reg_sec;
 wire [39:0] rtc_period;
-wire [37:0] rtc_time_acc_modulo;
 wire [31:0] rtc_adj_ld_data;
 wire [39:0] rtc_period_adj;
 wire [37:0] rtc_time_reg_ns_val;
@@ -77,10 +76,10 @@ rgs u_rgs
   .time_reg_sec_out(rtc_time_reg_sec),
   .period_ld_out(rtc_period_ld),
   .period_out(rtc_period),
-  .time_acc_modulo_out(rtc_time_acc_modulo),
   .adj_ld_out(rtc_adj_ld),
   .adj_ld_data_out(rtc_adj_ld_data),
   .period_adj_out(rtc_period_adj),
+  .adj_ld_done_in(adj_ld_done),
   .time_reg_ns_in(rtc_time_reg_ns_val),
   .time_reg_sec_in(rtc_time_reg_sec_val),
   .rx_q_rst_out(rx_q_rst),
@@ -104,9 +103,9 @@ rtc u_rtc
   .time_reg_sec_in(rtc_time_reg_sec),
   .period_ld(rtc_period_ld),
   .period_in(rtc_period),
-  .time_acc_modulo(rtc_time_acc_modulo),
   .adj_ld(rtc_adj_ld),
   .adj_ld_data(rtc_adj_ld_data),
+  .adj_ld_done(adj_ld_done),
   .period_adj(rtc_period_adj),
   .time_reg_ns(rtc_time_reg_ns_val),
   .time_reg_sec(rtc_time_reg_sec_val),

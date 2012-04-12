@@ -1,5 +1,5 @@
 /*
- * $ptp_parser.v
+ * ptp_parser.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *

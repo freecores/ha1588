@@ -1,5 +1,5 @@
 /*
- * $reg.v
+ * reg.v
  * 
  * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
@@ -36,10 +36,10 @@ module rgs (
   output [47:0] time_reg_sec_out,
   output        period_ld_out,
   output [39:0] period_out,
-  output [37:0] time_acc_modulo_out,
   output        adj_ld_out,
   output [31:0] adj_ld_data_out,
   output [39:0] period_adj_out,
+  input         adj_ld_done_in,
   input  [37:0] time_reg_ns_in,
   input  [47:0] time_reg_sec_in,
   // rx tsu interface
@@ -123,29 +123,29 @@ wire cs_78 = (addr_in[7:2]==const_78[7:2])? 1'b1: 1'b0;
 wire cs_7c = (addr_in[7:2]==const_7c[7:2])? 1'b1: 1'b0;
 
 reg [31:0] reg_00;  // ctrl 5 bit
-reg [31:0] reg_04;  // 
-reg [31:0] reg_08;  // 
-reg [31:0] reg_0c;  // 
-reg [31:0] reg_10;  // tout 16 s
-reg [31:0] reg_14;  // tout 32 s
-reg [31:0] reg_18;  // tout 30 ns
-reg [31:0] reg_1c;  // tout  8 nsf
+reg [31:0] reg_04;  // null
+reg [31:0] reg_08;  // null
+reg [31:0] reg_0c;  // null
+reg [31:0] reg_10;  // time 16 s
+reg [31:0] reg_14;  // time 32 s
+reg [31:0] reg_18;  // time 30 ns
+reg [31:0] reg_1c;  // time  8 nsf
 reg [31:0] reg_20;  // peri  8 ns
 reg [31:0] reg_24;  // peri 32 nsf
-reg [31:0] reg_28;  // amod 30 ns
-reg [31:0] reg_2c;  // amod  8 nsf
+reg [31:0] reg_28;  // ajpr  8 ns
+reg [31:0] reg_2c;  // ajpr 32 nsf
 reg [31:0] reg_30;  // ajld 32 bit
-reg [31:0] reg_34;  // 
-reg [31:0] reg_38;  // ajpr  8 ns
-reg [31:0] reg_3c;  // ajpr 32 nsf
-reg [31:0] reg_40;  // tmin 16 s
-reg [31:0] reg_44;  // tmin 32 s
-reg [31:0] reg_48;  // tmin 30 ns
-reg [31:0] reg_4c;  // tmin  8 nsf
-reg [31:0] reg_50;  // ctrl  4 bit
-reg [31:0] reg_54;  // qsta  8 bit
-reg [31:0] reg_58;  // qsta  8 bit
-reg [31:0] reg_5c;  // 
+reg [31:0] reg_34;  // null
+reg [31:0] reg_38;  // null
+reg [31:0] reg_3c;  // null
+reg [31:0] reg_40;  // ctrl  4 bit
+reg [31:0] reg_44;  // qsta  8 bit
+reg [31:0] reg_48;  // qsta  8 bit
+reg [31:0] reg_4c;  // null
+reg [31:0] reg_50;  // null
+reg [31:0] reg_54;  // null
+reg [31:0] reg_58;  // null
+reg [31:0] reg_5c;  // null
 reg [31:0] reg_60;  // rxqu 32 bit
 reg [31:0] reg_64;  // rxqu 32 bit
 reg [31:0] reg_68;  // rxqu 32 bit
@@ -205,14 +205,14 @@ reg         txqu_ok;
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
   // register mapping: RTC
-  if (rd_in && cs_00) data_out_reg <= {reg_00[31:1 ], time_ok};  // TODO: add adjt_ok read back
+  if (rd_in && cs_00) data_out_reg <= {reg_00[31: 2], adj_ld_done_in, time_ok};
   if (rd_in && cs_04) data_out_reg <= reg_04;
   if (rd_in && cs_08) data_out_reg <= reg_08;
   if (rd_in && cs_0c) data_out_reg <= reg_0c;
-  if (rd_in && cs_10) data_out_reg <= reg_10;
-  if (rd_in && cs_14) data_out_reg <= reg_14;
-  if (rd_in && cs_18) data_out_reg <= reg_18;
-  if (rd_in && cs_1c) data_out_reg <= reg_1c;
+  if (rd_in && cs_10) data_out_reg <= {16'd0, time_reg_sec_int[47:32]};
+  if (rd_in && cs_14) data_out_reg <=         time_reg_sec_int[31: 0] ;
+  if (rd_in && cs_18) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
+  if (rd_in && cs_1c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
   if (rd_in && cs_20) data_out_reg <= reg_20;
   if (rd_in && cs_24) data_out_reg <= reg_24;
   if (rd_in && cs_28) data_out_reg <= reg_28;
@@ -221,14 +221,14 @@ always @(posedge clk) begin
   if (rd_in && cs_34) data_out_reg <= reg_34;
   if (rd_in && cs_38) data_out_reg <= reg_38;
   if (rd_in && cs_3c) data_out_reg <= reg_3c;
-  if (rd_in && cs_40) data_out_reg <= {16'd0, time_reg_sec_int[47:32]};  // TODO: merge with reg_10 read back
-  if (rd_in && cs_44) data_out_reg <=         time_reg_sec_int[31: 0] ;
-  if (rd_in && cs_48) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
-  if (rd_in && cs_4c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
-  // register mapping: TSU  // TODO: base address move to reg_40
-  if (rd_in && cs_50) data_out_reg <= {reg_50[31: 4], reg_50[ 3], rxqu_ok, reg_50[ 1], txqu_ok};
-  if (rd_in && cs_54) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
-  if (rd_in && cs_58) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
+  // register mapping: TSU
+  if (rd_in && cs_40) data_out_reg <= {reg_40[31: 4], reg_40[ 3], rxqu_ok, reg_40[ 1], txqu_ok};
+  if (rd_in && cs_44) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_48) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_4c) data_out_reg <= reg_4c;
+  if (rd_in && cs_50) data_out_reg <= reg_50;
+  if (rd_in && cs_54) data_out_reg <= reg_54;
+  if (rd_in && cs_58) data_out_reg <= reg_58;
   if (rd_in && cs_5c) data_out_reg <= reg_5c;
   if (rd_in && cs_60) data_out_reg <= rx_q_data_int[127: 96];
   if (rd_in && cs_64) data_out_reg <= rx_q_data_int[ 95: 64];
@@ -253,19 +253,18 @@ wire time_rd = reg_00[ 0];
 assign time_reg_sec_out   [47:0] = {reg_10[15: 0], reg_14[31: 0]};
 assign time_reg_ns_out    [37:0] = {reg_18[29: 0], reg_1c[ 7: 0]};
 assign period_out         [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
-assign time_acc_modulo_out[37:0] = {reg_28[29: 0], reg_2c[ 7: 0]};  // TODO: remove writable, set as constant parameter
+assign period_adj_out     [39:0] = {reg_28[ 7: 0], reg_2c[31: 0]};
 assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
-assign period_adj_out     [39:0] = {reg_38[ 7: 0], reg_3c[31: 0]};
 
 // register mapping: TSU
-//wire       = reg_50[ 7];
-//wire       = reg_50[ 6];
-//wire       = reg_50[ 5];
-//wire       = reg_50[ 4];
-wire rxq_rst = reg_50[ 3];
-wire rxqu_rd = reg_50[ 2];
-wire txq_rst = reg_50[ 1];
-wire txqu_rd = reg_50[ 0];
+//wire       = reg_40[ 7];
+//wire       = reg_40[ 6];
+//wire       = reg_40[ 5];
+//wire       = reg_40[ 4];
+wire rxq_rst = reg_40[ 3];
+wire rxqu_rd = reg_40[ 2];
+wire txq_rst = reg_40[ 1];
+wire txqu_rd = reg_40[ 0];
 // TODO: add configurable VLANTPID values
 
 // real time clock
