@@ -1,7 +1,7 @@
 /*
  * $reg.v
  * 
- * Copyright (c) 2012, BBY&HW. All rights reserved.
+ * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,17 +43,17 @@ module rgs (
   input  [37:0] time_reg_ns_in,
   input  [47:0] time_reg_sec_in,
   // rx tsu interface
-  output        rx_q_rst_out,
-  output        rx_q_rd_clk_out,
-  output        rx_q_rd_en_out,
-  input  [ 7:0] rx_q_stat_in,
-  input  [63:0] rx_q_data_in,
+  output         rx_q_rst_out,
+  output         rx_q_rd_clk_out,
+  output         rx_q_rd_en_out,
+  input  [  7:0] rx_q_stat_in,
+  input  [127:0] rx_q_data_in,
   // tx tsu interface
-  output        tx_q_rst_out,
-  output        tx_q_rd_clk_out,
-  output        tx_q_rd_en_out,
-  input  [ 7:0] tx_q_stat_in,
-  input  [63:0] tx_q_data_in
+  output         tx_q_rst_out,
+  output         tx_q_rd_clk_out,
+  output         tx_q_rd_en_out,
+  input  [  7:0] tx_q_stat_in,
+  input  [127:0] tx_q_data_in
 );
 
 parameter const_00 = 8'h00;
@@ -84,6 +84,10 @@ parameter const_60 = 8'h60;
 parameter const_64 = 8'h64;
 parameter const_68 = 8'h68;
 parameter const_6c = 8'h6C;
+parameter const_70 = 8'h70;
+parameter const_74 = 8'h74;
+parameter const_78 = 8'h78;
+parameter const_7c = 8'h7C;
 
 wire cs_00 = (addr_in[7:2]==const_00[7:2])? 1'b1: 1'b0;
 wire cs_04 = (addr_in[7:2]==const_04[7:2])? 1'b1: 1'b0;
@@ -113,6 +117,10 @@ wire cs_60 = (addr_in[7:2]==const_60[7:2])? 1'b1: 1'b0;
 wire cs_64 = (addr_in[7:2]==const_64[7:2])? 1'b1: 1'b0;
 wire cs_68 = (addr_in[7:2]==const_68[7:2])? 1'b1: 1'b0;
 wire cs_6c = (addr_in[7:2]==const_6c[7:2])? 1'b1: 1'b0;
+wire cs_70 = (addr_in[7:2]==const_70[7:2])? 1'b1: 1'b0;
+wire cs_74 = (addr_in[7:2]==const_74[7:2])? 1'b1: 1'b0;
+wire cs_78 = (addr_in[7:2]==const_78[7:2])? 1'b1: 1'b0;
+wire cs_7c = (addr_in[7:2]==const_7c[7:2])? 1'b1: 1'b0;
 
 reg [31:0] reg_00;  // ctrl 5 bit
 reg [31:0] reg_04;  // 
@@ -140,8 +148,12 @@ reg [31:0] reg_58;  // qsta  8 bit
 reg [31:0] reg_5c;  // 
 reg [31:0] reg_60;  // rxqu 32 bit
 reg [31:0] reg_64;  // rxqu 32 bit
-reg [31:0] reg_68;  // txqu 32 bit
-reg [31:0] reg_6c;  // txqu 32 bit
+reg [31:0] reg_68;  // rxqu 32 bit
+reg [31:0] reg_6c;  // rxqu 32 bit
+reg [31:0] reg_70;  // txqu 32 bit
+reg [31:0] reg_74;  // txqu 32 bit
+reg [31:0] reg_78;  // txqu 32 bit
+reg [31:0] reg_7c;  // txqu 32 bit
 
 // write registers
 always @(posedge clk) begin
@@ -173,22 +185,27 @@ always @(posedge clk) begin
   if (wr_in && cs_64) reg_64 <= data_in;
   if (wr_in && cs_68) reg_68 <= data_in;
   if (wr_in && cs_6c) reg_6c <= data_in;
+  if (wr_in && cs_70) reg_70 <= data_in;
+  if (wr_in && cs_74) reg_74 <= data_in;
+  if (wr_in && cs_78) reg_78 <= data_in;
+  if (wr_in && cs_7c) reg_7c <= data_in;
 end
 
 // read registers
 reg  [37:0] time_reg_ns_int;
 reg  [47:0] time_reg_sec_int;
-reg  [63:0] rx_q_data_int;
-reg  [ 7:0] rx_q_stat_int;
-reg  [63:0] tx_q_data_int;
-reg  [ 7:0] tx_q_stat_int;
+reg  [127:0] rx_q_data_int;
+reg  [  7:0] rx_q_stat_int;
+reg  [127:0] tx_q_data_int;
+reg  [  7:0] tx_q_stat_int;
 reg         time_ok;
 reg         rxqu_ok;
 reg         txqu_ok;
 
 reg  [31:0] data_out_reg;
 always @(posedge clk) begin
-  if (rd_in && cs_00) data_out_reg <= {reg_00[31:1 ], time_ok};
+  // register mapping: RTC
+  if (rd_in && cs_00) data_out_reg <= {reg_00[31:1 ], time_ok};  // TODO: add adjt_ok read back
   if (rd_in && cs_04) data_out_reg <= reg_04;
   if (rd_in && cs_08) data_out_reg <= reg_08;
   if (rd_in && cs_0c) data_out_reg <= reg_0c;
@@ -204,18 +221,23 @@ always @(posedge clk) begin
   if (rd_in && cs_34) data_out_reg <= reg_34;
   if (rd_in && cs_38) data_out_reg <= reg_38;
   if (rd_in && cs_3c) data_out_reg <= reg_3c;
-  if (rd_in && cs_40) data_out_reg <= {16'd0, time_reg_sec_int[47:32]};
-  if (rd_in && cs_44) data_out_reg <=         time_reg_sec_int[31: 0];
+  if (rd_in && cs_40) data_out_reg <= {16'd0, time_reg_sec_int[47:32]};  // TODO: merge with reg_10 read back
+  if (rd_in && cs_44) data_out_reg <=         time_reg_sec_int[31: 0] ;
   if (rd_in && cs_48) data_out_reg <= { 2'd0, time_reg_ns_int [37: 8]};
   if (rd_in && cs_4c) data_out_reg <= {24'd0, time_reg_ns_int [ 7: 0]};
+  // register mapping: TSU  // TODO: base address move to reg_40
   if (rd_in && cs_50) data_out_reg <= {reg_50[31: 4], reg_50[ 3], rxqu_ok, reg_50[ 1], txqu_ok};
   if (rd_in && cs_54) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
   if (rd_in && cs_58) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
   if (rd_in && cs_5c) data_out_reg <= reg_5c;
-  if (rd_in && cs_60) data_out_reg <= rx_q_data_int[63:32];
-  if (rd_in && cs_64) data_out_reg <= rx_q_data_int[31: 0];
-  if (rd_in && cs_68) data_out_reg <= tx_q_data_int[63:32];
-  if (rd_in && cs_6c) data_out_reg <= tx_q_data_int[31: 0];
+  if (rd_in && cs_60) data_out_reg <= rx_q_data_int[127: 96];
+  if (rd_in && cs_64) data_out_reg <= rx_q_data_int[ 95: 64];
+  if (rd_in && cs_68) data_out_reg <= rx_q_data_int[ 63: 32];
+  if (rd_in && cs_6c) data_out_reg <= rx_q_data_int[ 31:  0];
+  if (rd_in && cs_70) data_out_reg <= tx_q_data_int[127: 96];
+  if (rd_in && cs_74) data_out_reg <= tx_q_data_int[ 95: 64];
+  if (rd_in && cs_78) data_out_reg <= tx_q_data_int[ 63: 32];
+  if (rd_in && cs_7c) data_out_reg <= tx_q_data_int[ 31:  0];
 end
 assign data_out = data_out_reg;
 
@@ -231,9 +253,10 @@ wire time_rd = reg_00[ 0];
 assign time_reg_sec_out   [47:0] = {reg_10[15: 0], reg_14[31: 0]};
 assign time_reg_ns_out    [37:0] = {reg_18[29: 0], reg_1c[ 7: 0]};
 assign period_out         [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
-assign time_acc_modulo_out[37:0] = {reg_28[29: 0], reg_2c[ 7: 0]};
+assign time_acc_modulo_out[37:0] = {reg_28[29: 0], reg_2c[ 7: 0]};  // TODO: remove writable, set as constant parameter
 assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
 assign period_adj_out     [39:0] = {reg_38[ 7: 0], reg_3c[31: 0]};
+
 // register mapping: TSU
 //wire       = reg_50[ 7];
 //wire       = reg_50[ 6];
@@ -243,6 +266,7 @@ wire rxq_rst = reg_50[ 3];
 wire rxqu_rd = reg_50[ 2];
 wire txq_rst = reg_50[ 1];
 wire txqu_rd = reg_50[ 0];
+// TODO: add configurable VLANTPID values
 
 // real time clock
 reg rtc_rst_s1, rtc_rst_s2, rtc_rst_s3;

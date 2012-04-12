@@ -1,7 +1,7 @@
 /*
  * $gmii_rx_bfm.v
  * 
- * Copyright (c) 2012, BBY&HW. All rights reserved.
+ * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,7 @@ initial begin
 end
 assign #2 gmii_rxclk = gmii_rxclk_offset;
 
-integer feeder_file_rx, r_rx;
+integer feeder_file_rx, r_rx, s_rx;
 integer start_addr_rx, end_addr_rx;
 integer index_rx, num_rx;
 reg eof_rx;
@@ -59,9 +59,9 @@ begin : feeder_rx
         // test pcap file endian
         r_rx = $fread(pcap_4bytes_rx, feeder_file_rx);
         pcap_endian_rx = (pcap_4bytes_rx == 32'ha1b2c3d4)? 1:0;
-        $fseek(feeder_file_rx, -4, 1);
+        s_rx = $fseek(feeder_file_rx, -4, 1);
         // skip pcap file header 24*8
-        $fseek(feeder_file_rx, 24, 1);
+        s_rx = $fseek(feeder_file_rx, 24, 1);
         // read packet content
         eof_rx = 0;
         num_rx = 0;
@@ -69,7 +69,7 @@ begin : feeder_rx
         begin : fileread_loop
             // skip frame header (8+4)*8
             start_addr_rx = $ftell(feeder_file_rx);
-            $fseek(feeder_file_rx, 8+4, 1);
+            s_rx = $fseek(feeder_file_rx, 8+4, 1);
             // get frame length big endian 4*8
             r_rx = $fread(packet_leng_rx, feeder_file_rx);
             packet_leng_rx = pcap_endian_rx? 

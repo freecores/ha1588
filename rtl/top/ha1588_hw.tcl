@@ -6,7 +6,7 @@
 # +-----------------------------------
 # | 
 # | ha1588 "Hardware Assisted IEEE 1588 IP Core" v1.0
-# | BBY&HW 2012.03.31.21:26:56
+# | BABY&HW 2012.03.31.21:26:56
 # | Hardware Assisted IEEE 1588 IP Core
 # | 
 # | ha1588.v
@@ -35,7 +35,7 @@ set_module_property NAME ha1588
 set_module_property VERSION 1.0
 set_module_property INTERNAL false
 set_module_property OPAQUE_ADDRESS_MAP true
-set_module_property AUTHOR "BBY&HW"
+set_module_property AUTHOR "BABY&HW"
 set_module_property DISPLAY_NAME "Hardware Assisted IEEE 1588 IP Core"
 set_module_property TOP_LEVEL_HDL_FILE ha1588.v
 set_module_property TOP_LEVEL_HDL_MODULE ha1588

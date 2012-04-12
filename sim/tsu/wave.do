@@ -45,19 +45,23 @@ add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/parser/p
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_data
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_msgid
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_seqid
+add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_cksum
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/parser/ptp_found
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/parser/ptp_infor
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/q_wr_clk
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/q_wr_en
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/q_wr_data
-add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/q_wrusedw
+add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/q_wrusedw
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/rdclk
+add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/queue/rdreq
+add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/DUT_RX/queue/rdusedw
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/BFM_RX/num_rx
 add wave -noupdate -format Literal -radix unsigned /tsu_queue_tb/rx_ptp_event_cnt
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {535600 ps} 0}
+WaveRestoreCursors {{Cursor 1} {39134000 ps} 0}
 configure wave -namecolwidth 188
 configure wave -valuecolwidth 165
 configure wave -justifyvalue left
@@ -72,4 +76,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {389986800 ps}
+WaveRestoreZoom {0 ps} {27824653 ps}

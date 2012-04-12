@@ -1,7 +1,7 @@
 /*
  * $tsu_queue_tb.v
  * 
- * Copyright (c) 2012, BBY&HW. All rights reserved.
+ * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,10 +32,10 @@ wire        gmii_txctrl;
 wire [ 7:0] gmii_txdata;
 reg         rtc_timer_clk;
 reg  [79:0] rtc_timer_in;
-reg         q_rd_clk;
-reg         q_rd_en;
-wire [ 7:0] q_rd_stat;
-wire [63:0] q_rd_data;
+reg          q_rd_clk;
+reg          q_rd_en;
+wire [  7:0] q_rd_stat;
+wire [127:0] q_rd_data;
 
 initial begin
   // emulate the hardware behavior when power-up

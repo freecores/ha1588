@@ -1,7 +1,7 @@
 /*
  * $rtc.v
  * 
- * Copyright (c) 2012, BBY&HW. All rights reserved.
+ * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

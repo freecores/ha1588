@@ -1,7 +1,7 @@
 /*
  * $ptp_parser.v
  * 
- * Copyright (c) 2012, BBY&HW. All rights reserved.
+ * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@ module ptp_parser (
   input [ 1:0] int_mod,
 
   output reg        ptp_found,
-  output reg [19:0] ptp_infor
+  output reg [31:0] ptp_infor
 );
 
 reg [31:0] int_data_d1;
@@ -48,8 +48,6 @@ end
 // packet parser: counter
 reg [ 9:0] int_cnt, bypass_ipv4_cnt, bypass_ipv6_cnt, bypass_udp_cnt, ptp_cnt;
 reg bypass_vlan, ptp_l2, bypass_mpls, bypass_ipv4, bypass_ipv6, found_udp, bypass_udp, ptp_l4, ptp_event;
-reg [ 3:0] ptp_msgid;
-reg [15:0] ptp_seqid;
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     int_cnt <= 10'd0;
@@ -168,26 +166,31 @@ always @(posedge rst or posedge clk) begin
 
     // check if it is PTP Event message
     if      (int_valid && (int_cnt==10'd3 || bypass_vlan && int_cnt==10'd4) && int_data[31:16]==16'h88F7 &&
-            (int_data[11: 8]== 4'h0 || int_data[11:8]==4'h2))  // ptp_message_id == sync || delay_req
+            (int_data[11: 8]>= 4'h0 && int_data[11:8]<=4'h7))  // ptp_message_id == ptp_event
       ptp_event <= 1'b1;
     else if (int_valid && int_cnt==10'd4 && bypass_udp_cnt==10'd1 && ptp_l4 &&
-            (int_data[11: 8]== 4'h0 || int_data[11:8]==4'h2))  // ptp_message_id == sync || delay_req
+            (int_data[11: 8]>= 4'h0 && int_data[11:8]<=4'h7))  // ptp_message_id == ptp_event
       ptp_event <= 1'b1;
   end
 end
 
 // ptp message
 reg [31:0] ptp_data;
+reg [ 3:0] ptp_msgid;
+reg [15:0] ptp_seqid;
+reg [11:0] ptp_cksum;
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     ptp_data  <= 32'd0;
     ptp_msgid <= 4'd0;
     ptp_seqid <= 16'd0;
+    ptp_cksum <= 12'd0;
   end
   else if (int_valid && int_sop) begin
     ptp_data  <= 32'd0;
     ptp_msgid <= 4'd0;
     ptp_seqid <= 16'd0;
+    ptp_cksum <= 12'd0;
   end
   else begin
     // get PTP identification information as additional information to Timestamp
@@ -196,10 +199,17 @@ always @(posedge rst or posedge clk) begin
       ptp_data <= {int_data_d1[15:0], int_data[31:16]};
     // message id
     if (int_valid && ptp_cnt==10'd1)
-      ptp_msgid <=   ptp_data[27:24];
+      ptp_msgid <= ptp_data[27:24];
     // sequence id
     if (int_valid && ptp_cnt==10'd8)
-      ptp_seqid <=   ptp_data[15:0];
+      ptp_seqid <= ptp_data[15:0];
+    // sum up clock id and source port id
+    if (int_valid && ptp_cnt==10'd6)
+      ptp_cksum <= ptp_data[31:24] + ptp_data[23:16] + ptp_data[15: 8] + ptp_data[ 7: 0] + ptp_cksum;
+    if (int_valid && ptp_cnt==10'd7)
+      ptp_cksum <= ptp_data[31:24] + ptp_data[23:16] + ptp_data[15: 8] + ptp_data[ 7: 0] + ptp_cksum;
+    if (int_valid && ptp_cnt==10'd8)
+      ptp_cksum <= ptp_data[31:24] + ptp_data[23:16]                                     + ptp_cksum;
   end
 end
 
@@ -207,15 +217,15 @@ end
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 20'd0;
+    ptp_infor <= 32'd0;
   end
   else if (int_valid && int_sop) begin
     ptp_found <=  1'b0;
-    ptp_infor <= 20'd0;
+    ptp_infor <= 32'd0;
   end
   else if (int_valid && ptp_cnt==10'd9) begin
     ptp_found <=  ptp_event;
-    ptp_infor <= {ptp_msgid, ptp_seqid};  // 4+16
+    ptp_infor <= {ptp_msgid, ptp_cksum, ptp_seqid};  // 4+12+16
   end
 end
 

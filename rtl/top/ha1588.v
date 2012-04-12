@@ -1,7 +1,7 @@
 /*
  * $ha1588.v
  * 
- * Copyright (c) 2012, BBY&HW. All rights reserved.
+ * Copyright (c) 2012, BABY&HW. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,12 +54,12 @@ wire [79:0] rtc_time_ptp_val = {rtc_time_ptp_sec[47:0], rtc_time_ptp_ns[31:0]};
 
 wire rx_q_rst, rx_q_clk;
 wire rx_q_rd_en;
-wire [ 7:0] rx_q_stat;
-wire [63:0] rx_q_data;
+wire [  7:0] rx_q_stat;
+wire [127:0] rx_q_data;
 wire tx_q_rst, tx_q_clk;
 wire tx_q_rd_en;
-wire [ 7:0] tx_q_stat;
-wire [63:0] tx_q_data;
+wire [  7:0] tx_q_stat;
+wire [127:0] tx_q_data;
 
 rgs u_rgs
 (
