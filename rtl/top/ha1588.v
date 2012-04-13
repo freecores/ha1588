@@ -21,6 +21,8 @@
 
 `timescale 1ns/1ns
 
+// TODO: add define to generate rtc only or tsu only.
+
 module ha1588 (
   input         rst,clk,
   input         wr_in,rd_in,
@@ -35,6 +37,7 @@ module ha1588 (
   input       rx_gmii_clk,
   input       rx_gmii_ctrl,
   input [7:0] rx_gmii_data,
+
   input       tx_gmii_clk,
   input       tx_gmii_ctrl,
   input [7:0] tx_gmii_data

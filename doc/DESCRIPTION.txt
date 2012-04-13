@@ -1,0 +1,36 @@
+General Description
+
+Hardware Assisted IEEE 1588 IP Core. The necessary FPGA logic to assist SW protocol stack in implementing the Precision Time Protocol (IEEE 1588-2008) on 1000M/100M/10M Ethernet networks. PTP packet transmitting and receiving is implemented with any existing MAC inside or outside the FPAG; The IP Core will implement the tunable Real-Time Clock and Time Stamping of PTP event packets (L2, UDP/IPv4/MPLS/VLAN and UDP/IPv6/MPLS/VLAN) in two-step-mode.
+
+Feature Description
+
+RTC: Real Time Clock.
+ * Standard PTP clock output with 2^48s and 2^32ns time resolution.
+ * Tunable accumulator based clock with 2^-8ns time resolution and 2^-32ns period resolution.
+ ** Direct ToD write, with 2^-8ns resolution.
+ ** Direct frequency write, with 2^-32ns resolution.
+ ** Timed temporary time adjustment, with 2^-8ns resolution and 2^32bit timer.
+ * Clock Domain Crossing hand-shaking, for SW read and write accesses.
+ 
+TSU: Time Stamping Unit.
+ * Two-Step PTP operation.
+ * 15-entry timestamp queue. 
+ * 128bit timestamp format.
+ ** 16bit extra information.
+ ** 80bit timestamp.
+ ** 32bit packet identity data.
+ * GMII interface tap with line-speed PTP event packet parsing.
+ ** Sync
+ ** Delay_Req
+ ** Pdelay_Req
+ ** Pdelay_Resp
+ * Variety of PTP packet formats support.
+ ** L2 PTP packet with stacked VLAN tags.
+ ** IPv4 and IPv6 UDP PTP packet with stacked VLAN tags and stacked MPLS labels.
+ * 32bit internal datapath for easier timing closure.
+
+SystemVerilog DPI based simulation environment is included for SW driver development.
+
+The IP Core can be used as an IP Component in Altera SOPC Builder.
+
+The only FPGA vendor dependent module is the timestamp queue. This Altera DCFIFO can be replaced by other FPGA vendor specific dual clock FIFO.

@@ -24,14 +24,14 @@
 module rtc (
   input rst, clk,
   // 1. direct time adjustment: ToD set up
-  input time_ld,
+  input        time_ld,
   input [37:0] time_reg_ns_in,   // 37:8 ns, 7:0 ns_fraction
   input [47:0] time_reg_sec_in,  // 47:0 sec
   // 2. frequency adjustment: frequency set up for drift compensation
-  input period_ld,
+  input        period_ld,
   input [39:0] period_in,        // 39:32 ns, 31:0 ns_fraction
   // 3. precise time adjustment: small time difference adjustment with a time mark
-  input adj_ld,
+  input        adj_ld,
   input [31:0] adj_ld_data,
   output reg   adj_ld_done,
   input [39:0] period_adj,  // 39:32 ns, 31:0 ns_fraction

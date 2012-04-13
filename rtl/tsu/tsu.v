@@ -67,7 +67,7 @@ always @(posedge rst or posedge gmii_clk) begin
 end
 
 // ptp CDC time stamping
-wire ts_req = int_gmii_ctrl;
+wire ts_req = int_gmii_ctrl;  // TODO: check frame start delimiter
 reg  ts_req_d1, ts_req_d2, ts_req_d3;
 always @(posedge rst or posedge rtc_timer_clk) begin
   if (rst) begin

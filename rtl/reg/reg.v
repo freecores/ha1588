@@ -126,30 +126,30 @@ reg [31:0] reg_00;  // ctrl 5 bit
 reg [31:0] reg_04;  // null
 reg [31:0] reg_08;  // null
 reg [31:0] reg_0c;  // null
-reg [31:0] reg_10;  // time 16 s
-reg [31:0] reg_14;  // time 32 s
-reg [31:0] reg_18;  // time 30 ns
-reg [31:0] reg_1c;  // time  8 nsf
-reg [31:0] reg_20;  // peri  8 ns
-reg [31:0] reg_24;  // peri 32 nsf
-reg [31:0] reg_28;  // ajpr  8 ns
-reg [31:0] reg_2c;  // ajpr 32 nsf
+reg [31:0] reg_10;  // time 16 bit s
+reg [31:0] reg_14;  // time 32 bit s
+reg [31:0] reg_18;  // time 30 bit ns
+reg [31:0] reg_1c;  // time  8 bit nsf
+reg [31:0] reg_20;  // peri  8 bit ns
+reg [31:0] reg_24;  // peri 32 bit nsf
+reg [31:0] reg_28;  // ajpr  8 bit ns
+reg [31:0] reg_2c;  // ajpr 32 bit nsf
 reg [31:0] reg_30;  // ajld 32 bit
 reg [31:0] reg_34;  // null
 reg [31:0] reg_38;  // null
 reg [31:0] reg_3c;  // null
-reg [31:0] reg_40;  // ctrl  4 bit
+reg [31:0] reg_40;  // ctrl  2 bit
 reg [31:0] reg_44;  // qsta  8 bit
-reg [31:0] reg_48;  // qsta  8 bit
+reg [31:0] reg_48;  // null
 reg [31:0] reg_4c;  // null
-reg [31:0] reg_50;  // null
-reg [31:0] reg_54;  // null
-reg [31:0] reg_58;  // null
-reg [31:0] reg_5c;  // null
-reg [31:0] reg_60;  // rxqu 32 bit
-reg [31:0] reg_64;  // rxqu 32 bit
-reg [31:0] reg_68;  // rxqu 32 bit
-reg [31:0] reg_6c;  // rxqu 32 bit
+reg [31:0] reg_50;  // rxqu 32 bit
+reg [31:0] reg_54;  // rxqu 32 bit
+reg [31:0] reg_58;  // rxqu 32 bit
+reg [31:0] reg_5c;  // rxqu 32 bit
+reg [31:0] reg_60;  // ctrl  2 bit
+reg [31:0] reg_64;  // qsta  8 bit
+reg [31:0] reg_68;  // null
+reg [31:0] reg_6c;  // null
 reg [31:0] reg_70;  // txqu 32 bit
 reg [31:0] reg_74;  // txqu 32 bit
 reg [31:0] reg_78;  // txqu 32 bit
@@ -221,19 +221,20 @@ always @(posedge clk) begin
   if (rd_in && cs_34) data_out_reg <= reg_34;
   if (rd_in && cs_38) data_out_reg <= reg_38;
   if (rd_in && cs_3c) data_out_reg <= reg_3c;
-  // register mapping: TSU
-  if (rd_in && cs_40) data_out_reg <= {reg_40[31: 4], reg_40[ 3], rxqu_ok, reg_40[ 1], txqu_ok};
+  // register mapping: TSU RX
+  if (rd_in && cs_40) data_out_reg <= {reg_40[31: 2], reg_40[ 1], rxqu_ok};
   if (rd_in && cs_44) data_out_reg <= {24'd0, rx_q_stat_int[ 7: 0]};
-  if (rd_in && cs_48) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_48) data_out_reg <= reg_48;
   if (rd_in && cs_4c) data_out_reg <= reg_4c;
-  if (rd_in && cs_50) data_out_reg <= reg_50;
-  if (rd_in && cs_54) data_out_reg <= reg_54;
-  if (rd_in && cs_58) data_out_reg <= reg_58;
-  if (rd_in && cs_5c) data_out_reg <= reg_5c;
-  if (rd_in && cs_60) data_out_reg <= rx_q_data_int[127: 96];
-  if (rd_in && cs_64) data_out_reg <= rx_q_data_int[ 95: 64];
-  if (rd_in && cs_68) data_out_reg <= rx_q_data_int[ 63: 32];
-  if (rd_in && cs_6c) data_out_reg <= rx_q_data_int[ 31:  0];
+  if (rd_in && cs_50) data_out_reg <= rx_q_data_int[127: 96];
+  if (rd_in && cs_54) data_out_reg <= rx_q_data_int[ 95: 64];
+  if (rd_in && cs_58) data_out_reg <= rx_q_data_int[ 63: 32];
+  if (rd_in && cs_5c) data_out_reg <= rx_q_data_int[ 31:  0];
+  // register mapping: TSU TX
+  if (rd_in && cs_60) data_out_reg <= {reg_60[31: 2], reg_60[ 1], txqu_ok}; 
+  if (rd_in && cs_64) data_out_reg <= {24'd0, tx_q_stat_int[ 7: 0]};
+  if (rd_in && cs_68) data_out_reg <= reg_68;
+  if (rd_in && cs_6c) data_out_reg <= reg_6c;
   if (rd_in && cs_70) data_out_reg <= tx_q_data_int[127: 96];
   if (rd_in && cs_74) data_out_reg <= tx_q_data_int[ 95: 64];
   if (rd_in && cs_78) data_out_reg <= tx_q_data_int[ 63: 32];
@@ -256,15 +257,26 @@ assign period_out         [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
 assign period_adj_out     [39:0] = {reg_28[ 7: 0], reg_2c[31: 0]};
 assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
 
-// register mapping: TSU
+// register mapping: TSU RX
 //wire       = reg_40[ 7];
 //wire       = reg_40[ 6];
 //wire       = reg_40[ 5];
 //wire       = reg_40[ 4];
-wire rxq_rst = reg_40[ 3];
-wire rxqu_rd = reg_40[ 2];
-wire txq_rst = reg_40[ 1];
-wire txqu_rd = reg_40[ 0];
+//wire       = reg_40[ 3];
+//wire       = reg_40[ 2];
+wire rxq_rst = reg_40[ 1];
+wire rxqu_rd = reg_40[ 0];
+
+// register mapping: TSU TX
+//wire       = reg_60[ 7];
+//wire       = reg_60[ 6];
+//wire       = reg_60[ 5];
+//wire       = reg_60[ 4];
+//wire       = reg_60[ 3];
+//wire       = reg_60[ 2];
+wire txq_rst = reg_60[ 1];
+wire txqu_rd = reg_60[ 0];
+// TODO: add configurable PTP Event msgID value mask
 // TODO: add configurable VLANTPID values
 
 // real time clock
