@@ -118,7 +118,7 @@ initial begin
 	for (i=0; i<20; i=i+1) @(posedge clk);
 	// load time ToD values
 	time_ld              =  1'b1;
-	time_reg_ns_in[37:8] = 30'd999999990;  // ns
+	time_reg_ns_in[37:8] = 30'd999999900;  // ns
 	time_reg_ns_in[ 7:0] =  8'h00;         // ns fraction
 	time_reg_sec_in      = 48'd10;
 	@(posedge clk);
@@ -163,9 +163,11 @@ always @(posedge clk) begin
 	time_reg_sec__d1 <= time_reg_sec_;
 	time_reg_ns__d1  <= time_reg_ns_;
 end
+wire [29:0] time_reg_sec__delta = time_reg_sec_-time_reg_sec__d1;
 wire [29:0] time_reg_ns__delta = (time_reg_sec__d1!=time_reg_sec_)?
 				(DUT.time_acc_modulo/256-(time_reg_ns__d1-time_reg_ns_)):
 				(time_reg_ns_-time_reg_ns__d1);
+wire [37:0] time_acc_30n_08f_pre = DUT.time_acc_30n_08f_pre_pos - DUT.time_acc_30n_08f_pre_neg;
 
 // Delta-Sigma circuit watchpoint
 wire [23:0] time_adj_08n_32f_24f = rtc_timer_tb.DUT.time_adj_08n_32f[23:0];

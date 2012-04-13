@@ -28,9 +28,18 @@ add wave -noupdate -divider Delta-Sigma
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_08n_32f
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_08n_08f
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_00n_24f
+add wave -noupdate -divider {New Divider}
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_30n_08f_pre_pos
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_30n_08f_pre_neg
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_modulo
+add wave -noupdate -format Logic /rtc_timer_tb/DUT/time_acc_48s_inc
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_48s
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_30n_08f
 add wave -noupdate -divider {WATCHPOINT Signals}
 add wave -noupdate -divider {ns and sec}
+add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_sec__delta
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns__delta
+add wave -noupdate -format Literal /rtc_timer_tb/time_acc_30n_08f_pre
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_sec_in_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_ns_in_
 add wave -noupdate -format Literal -radix unsigned /rtc_timer_tb/time_reg_sec_
@@ -47,7 +56,7 @@ add wave -noupdate -divider {New Divider}
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -divider {New Divider}
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {476 ns} 0}
+WaveRestoreCursors {{Cursor 1} {620 ns} 0}
 configure wave -namecolwidth 222
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -62,4 +71,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {2100 ns}
+WaveRestoreZoom {484 ns} {568 ns}

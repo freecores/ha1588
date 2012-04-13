@@ -98,15 +98,40 @@ always @(posedge rst or posedge clk) begin
 end
 assign time_adj_08n_08f = time_adj_08n_32f[39:24];  // output w/o the delta
 
-reg  [37:0] time_acc_30n_08f;  // 37:8 ns , 7:0 ns_fraction
-reg  [47:0] time_acc_48s;      // 47:0 sec
-reg         time_acc_48s_inc;
+reg  [37:0] time_acc_30n_08f_pre_pos;  // 37:8 ns , 7:0 ns_fraction
+reg  [37:0] time_acc_30n_08f_pre_neg;  // 37:8 ns , 7:0 ns_fraction
+wire        time_acc_48s_inc = (time_acc_30n_08f_pre_pos >= time_acc_modulo)? 1'b1: 1'b0;
+// time accumulator pre adder (48bit_s + 30bit_ns + 8bit_ns_fraction)
+always @(posedge rst or posedge clk) begin
+  if (rst) begin
+    time_acc_30n_08f_pre_pos <= {22'd0, time_adj_08n_08f};
+    time_acc_30n_08f_pre_neg <= {22'd0, time_adj_08n_08f};
+  end
+  else begin
+    if (time_ld) begin  // direct write
+      time_acc_30n_08f_pre_pos <= time_reg_ns_in + {22'd0, time_adj_08n_08f};
+      time_acc_30n_08f_pre_neg <= time_reg_ns_in + {22'd0, time_adj_08n_08f};
+    end
+    else begin
+      if (time_acc_48s_inc) begin
+        time_acc_30n_08f_pre_pos <= time_acc_30n_08f_pre_neg + {22'd0, time_adj_08n_08f};
+        time_acc_30n_08f_pre_neg <= time_acc_30n_08f_pre_neg + {22'd0, time_adj_08n_08f} - time_acc_modulo;
+      end
+      else begin
+        time_acc_30n_08f_pre_pos <= time_acc_30n_08f_pre_pos + {22'd0, time_adj_08n_08f};
+        time_acc_30n_08f_pre_neg <= time_acc_30n_08f_pre_pos + {22'd0, time_adj_08n_08f} - time_acc_modulo;
+      end
+    end
+  end
+end
+
+reg  [37:0] time_acc_30n_08f;          // 37:8 ns , 7:0 ns_fraction
+reg  [47:0] time_acc_48s;              // 47:0 sec
 // time accumulator (48bit_s + 30bit_ns + 8bit_ns_fraction)
 always @(posedge rst or posedge clk) begin
   if (rst) begin
     time_acc_30n_08f <= 38'd0;
     time_acc_48s     <= 48'd0;
-    time_acc_48s_inc <=  1'b0;
   end
   else begin
     if (time_ld) begin  // direct write
@@ -115,17 +140,10 @@ always @(posedge rst or posedge clk) begin
     end
     else begin
 
-      if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} >= time_acc_modulo)
-        time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f} - time_acc_modulo;
-      else
-        time_acc_30n_08f <= time_acc_30n_08f + {22'd0, time_adj_08n_08f};
-
       if (time_acc_48s_inc)
-        time_acc_48s_inc <= 1'b0;
-      else if (time_acc_30n_08f + {22'd0, time_adj_08n_08f} + {22'd0, time_adj_08n_08f} >= time_acc_modulo)  // TODO: period_adj
-        time_acc_48s_inc <= 1'b1;
+        time_acc_30n_08f <= time_acc_30n_08f_pre_neg;
       else
-        time_acc_48s_inc <= 1'b0;
+        time_acc_30n_08f <= time_acc_30n_08f_pre_pos;
 
       if (time_acc_48s_inc)
         time_acc_48s     <= time_acc_48s + 1;

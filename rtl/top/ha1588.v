@@ -44,7 +44,7 @@ module ha1588 (
 );
 
 wire rtc_rst;
-wire rtc_time_ld, rtc_period_ld, rtc_adj_ld;
+wire rtc_time_ld, rtc_period_ld, rtc_adj_ld, adj_ld_done;
 wire [37:0] rtc_time_reg_ns;
 wire [47:0] rtc_time_reg_sec;
 wire [39:0] rtc_period;
