@@ -22,7 +22,9 @@
 `timescale 1ns/1ns
 
 module rtc_timer_tb  ; 
- 
+
+  parameter time_acc_modulo = 38'd256000000000/1000000;
+
   reg rst;
   reg clk;
   wire         adj_ld_done;
@@ -53,6 +55,7 @@ module rtc_timer_tb  ;
       .period_adj (period_adj ) ,
       .adj_ld_data (adj_ld_data ) ,
       .adj_ld_done ( ) ); 
+  defparam DUT.time_acc_modulo = time_acc_modulo;
 
 
 initial begin 
@@ -65,9 +68,6 @@ initial begin
 	rst = 1'b1;
 	@(posedge clk);
 	rst = 1'b0;
-end
-initial begin
-	#2000 $stop;
 end
 
 // main process
@@ -105,24 +105,37 @@ initial begin
 	period_in[31: 0]   = 32'h00000000;  // ns fraction
 	@(posedge clk);
         period_ld          =  1'b0;
-	
-	for (i=0; i<20; i=i+1) @(posedge clk);
-	// fine tune time difference by 0
-	adj_ld            =  1'b1;
-	adj_ld_data       = 32'd10;
-	period_adj[39:32] =  8'h00;        // ns           // can be negative?
-	period_adj[31: 0] = 32'h00000000;  // ns fraction
-	@(posedge clk);
-	adj_ld            =  1'b0;
 
 	for (i=0; i<20; i=i+1) @(posedge clk);
 	// load time ToD values
 	time_ld              =  1'b1;
-	time_reg_ns_in[37:8] = 30'd999999900;  // ns
+	time_reg_ns_in[37:8] = time_acc_modulo/256 - 30'd100;  // ns
 	time_reg_ns_in[ 7:0] =  8'h00;         // ns fraction
 	time_reg_sec_in      = 48'd10;
 	@(posedge clk);
 	time_ld              =  1'b0;
+	
+	for (i=0; i<20; i=i+1) @(posedge clk);
+	// fine tune time difference by 0
+	adj_ld            =  1'b1;
+	adj_ld_data       = 32'd100;
+	period_adj[39:32] =  8'h08;        // ns           // positive change
+	period_adj[31: 0] = 32'h00000000;  // ns fraction
+	@(posedge clk);
+	adj_ld            =  1'b0;
+
+	for (i=0; i<300; i=i+1) @(posedge clk);
+	
+	for (i=0; i<20; i=i+1) @(posedge clk);
+	// fine tune time difference by 0
+	adj_ld            =  1'b1;
+	adj_ld_data       = 32'd100;
+	period_adj[39:32] =  8'hfb;        // ns           // negative change
+	period_adj[31: 0] = 32'h00000000;  // ns fraction
+	@(posedge clk);
+	adj_ld            =  1'b0;
+
+	for (i=0; i<300; i=i+1) @(posedge clk);
 
 	for (i=0; i<20; i=i+1) @(posedge clk);
 	// fine tune frequency difference
@@ -136,10 +149,13 @@ initial begin
 	// fine tune time difference
 	adj_ld            =  1'b1;
 	adj_ld_data       = 32'd10;
-	period_adj[39:32] =  8'h02;        // ns           // can be negative?
+	period_adj[39:32] =  8'h02;        // ns           // positive change
 	period_adj[31: 0] = 32'h20800000;  // ns fraction
 	@(posedge clk);
 	adj_ld            =  1'b0;
+
+	for (i=0; i<500; i=i+1) @(posedge clk);
+	$stop;
 end
 
 // sec+ns watchpoint
