@@ -73,11 +73,13 @@
 #define TSU_TXQUE_DATA_LH 0x00000078
 #define TSU_TXQUE_DATA_LL 0x0000007C
 // define TSU control values
-#define TSU_SET_CTRL_0 0x00
-#define TSU_GET_RXQUE  0x01
-#define TSU_SET_RXRST  0x02
-#define TSU_GET_TXQUE  0x01
-#define TSU_SET_TXRST  0x02
+#define TSU_SET_CTRL_0  0x00
+#define TSU_GET_RXQUE   0x01
+#define TSU_SET_RXRST   0x02
+#define TSU_SET_RXMSGID 0xFF000000
+#define TSU_GET_TXQUE   0x01
+#define TSU_SET_TXRST   0x02
+#define TSU_SET_TXMSGID 0xFF000000
 
 int ptp_drv_bfm_c(double fw_delay)
 {
@@ -229,6 +231,15 @@ int ptp_drv_bfm_c(double fw_delay)
   int rx_queue_num;
   int tx_queue_num;
 
+  // CONFIG TSU
+  cpu_addr_i = TSU_RXQUE_STATUS;
+  cpu_data_i = TSU_SET_RXMSGID;
+  cpu_wr(cpu_addr_i, cpu_data_i);
+
+  cpu_addr_i = TSU_TXQUE_STATUS;
+  cpu_data_i = TSU_SET_TXMSGID;
+  cpu_wr(cpu_addr_i, cpu_data_i);
+
   // RESET TSU
   cpu_addr_i = TSU_RXCTRL;
   cpu_data_i = TSU_SET_CTRL_0;
@@ -252,7 +263,7 @@ int ptp_drv_bfm_c(double fw_delay)
     // POLL TSU RX STATUS
     cpu_addr_i = TSU_RXQUE_STATUS;
     cpu_rd(cpu_addr_i, &cpu_data_o);
-    rx_queue_num = cpu_data_o;
+    rx_queue_num = cpu_data_o & 0x00FFFFFF;
     //printf("%08x\n", rx_queue_num);
 
     if (rx_queue_num > 0x0) {
@@ -325,7 +336,7 @@ int ptp_drv_bfm_c(double fw_delay)
     // POLL TSU TX STATUS
     cpu_addr_i = TSU_TXQUE_STATUS;
     cpu_rd(cpu_addr_i, &cpu_data_o);
-    tx_queue_num = cpu_data_o;
+    tx_queue_num = cpu_data_o & 0x00FFFFFF;
     //printf("%08x\n", tx_queue_num);
 
     if (tx_queue_num > 0x0) {

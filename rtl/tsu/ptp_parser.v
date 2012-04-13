@@ -29,6 +29,8 @@ module ptp_parser (
   input        int_eop,
   input [ 1:0] int_mod,
 
+  input [ 7:0] ptp_msgid_mask,
+
   output reg        ptp_found,
   output reg [31:0] ptp_infor
 );
@@ -166,10 +168,10 @@ always @(posedge rst or posedge clk) begin
 
     // check if it is PTP Event message
     if      (int_valid && (int_cnt==10'd3 || bypass_vlan && int_cnt==10'd4) && int_data[31:16]==16'h88F7 &&
-            (int_data[11: 8]>= 4'h0 && int_data[11:8]<=4'h7))  // ptp_message_id == ptp_event
+            (ptp_msgid_mask[int_data[11: 8]]))  // ptp_message_id == ptp_event
       ptp_event <= 1'b1;
     else if (int_valid && int_cnt==10'd4 && bypass_udp_cnt==10'd1 && ptp_l4 &&
-            (int_data[11: 8]>= 4'h0 && int_data[11:8]<=4'h7))  // ptp_message_id == ptp_event
+            (ptp_msgid_mask[int_data[11: 8]]))  // ptp_message_id == ptp_event 
       ptp_event <= 1'b1;
   end
 end

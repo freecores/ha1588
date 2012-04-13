@@ -27,6 +27,8 @@ module tsu (
     input       gmii_clk,
     input       gmii_ctrl,
     input [7:0] gmii_data,
+
+    input [7:0] ptp_msgid_mask,
     
     input        rtc_timer_clk,
     input [79:0] rtc_timer_in,  // timeStamp1s_48bit + timeStamp1ns_32bit
@@ -216,6 +218,7 @@ ptp_parser parser(
   .int_sop(int_sop_d1),
   .int_eop(int_eop_d1),
   .int_mod(int_mod_d1),
+  .ptp_msgid_mask(ptp_msgid_mask),
   .ptp_found(ptp_found),
   .ptp_infor(ptp_infor)
 );

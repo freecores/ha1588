@@ -56,10 +56,12 @@ wire [79:0] rtc_time_ptp_val = {rtc_time_ptp_sec[47:0], rtc_time_ptp_ns[31:0]};
 
 wire rx_q_rst, rx_q_clk;
 wire rx_q_rd_en;
+wire [  7:0] rx_q_ptp_msgid_mask;
 wire [  7:0] rx_q_stat;
 wire [127:0] rx_q_data;
 wire tx_q_rst, tx_q_clk;
 wire tx_q_rd_en;
+wire [  7:0] tx_q_ptp_msgid_mask;
 wire [  7:0] tx_q_stat;
 wire [127:0] tx_q_data;
 
@@ -88,11 +90,13 @@ rgs u_rgs
   .rx_q_rst_out(rx_q_rst),
   .rx_q_rd_clk_out(rx_q_clk),
   .rx_q_rd_en_out(rx_q_rd_en),
+  .rx_q_ptp_msgid_mask_out(rx_q_ptp_msgid_mask),
   .rx_q_stat_in(rx_q_stat),
   .rx_q_data_in(rx_q_data),
   .tx_q_rst_out(tx_q_rst),
   .tx_q_rd_clk_out(tx_q_clk),
   .tx_q_rd_en_out(tx_q_rd_en),
+  .tx_q_ptp_msgid_mask_out(tx_q_ptp_msgid_mask),
   .tx_q_stat_in(tx_q_stat),
   .tx_q_data_in(tx_q_data)
 );
@@ -122,6 +126,7 @@ tsu u_rx_tsu
   .gmii_clk(rx_gmii_clk),
   .gmii_ctrl(rx_gmii_ctrl),
   .gmii_data(rx_gmii_data),
+  .ptp_msgid_mask(rx_q_ptp_msgid_mask),
   .rtc_timer_clk(rtc_clk),
   .rtc_timer_in(rtc_time_ptp_val),
   .q_rst(rx_q_rst),
@@ -137,6 +142,7 @@ tsu u_tx_tsu
   .gmii_clk(tx_gmii_clk),
   .gmii_ctrl(tx_gmii_ctrl),
   .gmii_data(tx_gmii_data),
+  .ptp_msgid_mask(tx_q_ptp_msgid_mask),
   .rtc_timer_clk(rtc_clk),
   .rtc_timer_in(rtc_time_ptp_val),
   .q_rst(tx_q_rst),

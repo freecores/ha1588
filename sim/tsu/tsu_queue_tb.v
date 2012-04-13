@@ -70,6 +70,8 @@ tsu DUT_RX
     .gmii_ctrl(gmii_rxctrl),
     .gmii_data(gmii_rxdata),
 
+    .ptp_msgid_mask(8'b11111111),
+
     .rtc_timer_clk(rtc_timer_clk),
     .rtc_timer_in(rtc_timer_in),
 
@@ -95,6 +97,8 @@ tsu DUT_TX
     .gmii_clk(gmii_txclk),
     .gmii_ctrl(gmii_txctrl),
     .gmii_data(gmii_txdata),
+
+    .ptp_msgid_mask(8'b11111111),
 
     .rtc_timer_clk(rtc_timer_clk),
     .rtc_timer_in(rtc_timer_in),

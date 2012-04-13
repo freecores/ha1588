@@ -46,12 +46,14 @@ module rgs (
   output         rx_q_rst_out,
   output         rx_q_rd_clk_out,
   output         rx_q_rd_en_out,
+  output [  7:0] rx_q_ptp_msgid_mask_out,
   input  [  7:0] rx_q_stat_in,
   input  [127:0] rx_q_data_in,
   // tx tsu interface
   output         tx_q_rst_out,
   output         tx_q_rd_clk_out,
   output         tx_q_rd_en_out,
+  output [  7:0] tx_q_ptp_msgid_mask_out,
   input  [  7:0] tx_q_stat_in,
   input  [127:0] tx_q_data_in
 );
@@ -251,11 +253,11 @@ wire time_ld = reg_00[ 3];
 wire perd_ld = reg_00[ 2];
 wire adjt_ld = reg_00[ 1];
 wire time_rd = reg_00[ 0];
-assign time_reg_sec_out   [47:0] = {reg_10[15: 0], reg_14[31: 0]};
-assign time_reg_ns_out    [37:0] = {reg_18[29: 0], reg_1c[ 7: 0]};
-assign period_out         [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
-assign period_adj_out     [39:0] = {reg_28[ 7: 0], reg_2c[31: 0]};
-assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
+assign time_reg_sec_out [47:0] = {reg_10[15: 0], reg_14[31: 0]};
+assign time_reg_ns_out  [37:0] = {reg_18[29: 0], reg_1c[ 7: 0]};
+assign period_out       [39:0] = {reg_20[ 7: 0], reg_24[31: 0]};
+assign period_adj_out   [39:0] = {reg_28[ 7: 0], reg_2c[31: 0]};
+assign adj_ld_data_out  [31:0] =  reg_30[31: 0];
 
 // register mapping: TSU RX
 //wire       = reg_40[ 7];
@@ -266,6 +268,7 @@ assign adj_ld_data_out    [31:0] =  reg_30[31: 0];
 //wire       = reg_40[ 2];
 wire rxq_rst = reg_40[ 1];
 wire rxqu_rd = reg_40[ 0];
+assign rx_q_ptp_msgid_mask_out [7:0] = reg_44[31:24];
 
 // register mapping: TSU TX
 //wire       = reg_60[ 7];
@@ -276,7 +279,7 @@ wire rxqu_rd = reg_40[ 0];
 //wire       = reg_60[ 2];
 wire txq_rst = reg_60[ 1];
 wire txqu_rd = reg_60[ 0];
-// TODO: add configurable PTP Event msgID value mask
+assign tx_q_ptp_msgid_mask_out [7:0] = reg_64[31:24];
 // TODO: add configurable VLANTPID values
 
 // real time clock
