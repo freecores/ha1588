@@ -8,7 +8,7 @@ add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/ts_req
 add wave -noupdate -format Literal -radix hexadecimal /tsu_queue_tb/DUT_RX/rtc_time_stamp
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/ts_ack
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/ts_ack_clr
-add wave -noupdate -format Literal -radix hexadecimal /tsu_queue_tb/DUT_RX/gmii_time_stamp
+add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/tsu_time_stamp
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Logic /tsu_queue_tb/DUT_RX/int_gmii_ctrl
 add wave -noupdate -format Literal /tsu_queue_tb/DUT_RX/int_gmii_data
@@ -76,4 +76,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {27824653 ps}
+WaveRestoreZoom {175156 ps} {398339 ps}

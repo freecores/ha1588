@@ -76,10 +76,10 @@
 #define TSU_SET_CTRL_0  0x00
 #define TSU_GET_RXQUE   0x01
 #define TSU_SET_RXRST   0x02
-#define TSU_SET_RXMSGID 0xFF000000
+#define TSU_SET_RXMSGID 0xFF000000  // FF to enable 0x0 to 0x7
 #define TSU_GET_TXQUE   0x01
 #define TSU_SET_TXRST   0x02
-#define TSU_SET_TXMSGID 0xFF000000
+#define TSU_SET_TXMSGID 0xFF000000  // FF to enable 0x0 to 0x7
 
 int ptp_drv_bfm_c(double fw_delay)
 {

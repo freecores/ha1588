@@ -157,18 +157,21 @@ initial begin
     @(posedge BFM_TX.eof_tx);
   join
 
-  if (rx_ptp_event_cnt == 0)
+  if      (rx_ptp_event_cnt == 0 || tx_ptp_event_cnt == 0) begin
+    if (rx_ptp_event_cnt == 0)
     $display("RX Parser Test Fail: found 0 PTP-EVENT!");
-
-  if (tx_ptp_event_cnt == 0)
+    if (tx_ptp_event_cnt == 0)
     $display("TX Parser Test Fail: found 0 PTP-EVENT!");
-
-  if      (rx_ptp_mismatch_cnt > 0)
+  end
+  else if (rx_ptp_mismatch_cnt > 0 || tx_ptp_mismatch_cnt > 0) begin
+    if (rx_ptp_mismatch_cnt > 0)
     $display("Rx Parser Mismatch Found: RX-PTP-EVENT-MISMATCH = %d", rx_ptp_mismatch_cnt);
-  else if (tx_ptp_mismatch_cnt > 0)
+    if (tx_ptp_mismatch_cnt > 0)
     $display("Tx Parser Mismatch Found: TX-PTP-EVENT-MISMATCH = %d", tx_ptp_mismatch_cnt);
-  else
+  end
+  else begin
     $display("RX and TX Parser Test Pass:\n RX-PTP-EVENT = %d\n TX-PTP-EVENT = %d", rx_ptp_event_cnt, tx_ptp_event_cnt);
+  end
 
   #100 $stop;
 end

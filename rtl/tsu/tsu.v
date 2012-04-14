@@ -113,19 +113,19 @@ always @(posedge rst or posedge gmii_clk) begin
     ts_ack_d3 <= ts_ack_d2;
   end
 end
-reg [79:0] gmii_time_stamp;
+reg [79:0] tsu_time_stamp;
 always @(posedge rst or posedge gmii_clk) begin
   if (rst) begin
-    gmii_time_stamp <= 80'd0;
+    tsu_time_stamp <= 80'd0;
     ts_ack_clr      <= 1'b0;
   end
   else begin
     if (ts_ack_d2 & !ts_ack_d3) begin
-      gmii_time_stamp <= rtc_time_stamp;
+      tsu_time_stamp <= rtc_time_stamp;
       ts_ack_clr      <= 1'b1;
     end
     else begin
-      gmii_time_stamp <= gmii_time_stamp;
+      tsu_time_stamp <= tsu_time_stamp;
       ts_ack_clr      <= 1'b0;
     end
   end
@@ -226,7 +226,7 @@ ptp_parser parser(
 // ptp time stamp dcfifo
 wire q_wr_clk = gmii_clk;
 wire q_wr_en = ptp_found && int_eop_d1;
-wire [127:0] q_wr_data = {16'd0, gmii_time_stamp, ptp_infor};  // 16+80+32 bit
+wire [127:0] q_wr_data = {16'd0, tsu_time_stamp, ptp_infor};  // 16+80+32 bit
 wire [3:0] q_wrusedw;
 wire [3:0] q_rdusedw;
 
