@@ -104,8 +104,8 @@ wire        time_acc_48s_inc = (time_acc_30n_08f_pre_pos >= time_acc_modulo)? 1'
 // time accumulator pre adder (48bit_s + 30bit_ns + 8bit_ns_fraction)
 always @(posedge rst or posedge clk) begin
   if (rst) begin
-    time_acc_30n_08f_pre_pos <= {22'd0, time_adj_08n_08f};
-    time_acc_30n_08f_pre_neg <= {22'd0, time_adj_08n_08f};
+    time_acc_30n_08f_pre_pos <= 38'd0;
+    time_acc_30n_08f_pre_neg <= 38'd0;
   end
   else begin
     if (time_ld) begin  // direct write
