@@ -76,10 +76,11 @@
 #define TSU_SET_CTRL_0  0x00
 #define TSU_GET_RXQUE   0x01
 #define TSU_SET_RXRST   0x02
-#define TSU_SET_RXMSGID 0xFF000000  // FF to enable 0x0 to 0x7
 #define TSU_GET_TXQUE   0x01
 #define TSU_SET_TXRST   0x02
-#define TSU_SET_TXMSGID 0xFF000000  // FF to enable 0x0 to 0x7
+// define TSU data values
+#define TSU_MASK_RXMSGID 0xFF000000  // FF to enable 0x0 to 0x7
+#define TSU_MASK_TXMSGID 0xFF000000  // FF to enable 0x0 to 0x7
 
 int ptp_drv_bfm_c(double fw_delay)
 {
@@ -233,11 +234,11 @@ int ptp_drv_bfm_c(double fw_delay)
 
   // CONFIG TSU
   cpu_addr_i = TSU_RXQUE_STATUS;
-  cpu_data_i = TSU_SET_RXMSGID;
+  cpu_data_i = TSU_MASK_RXMSGID;
   cpu_wr(cpu_addr_i, cpu_data_i);
 
   cpu_addr_i = TSU_TXQUE_STATUS;
-  cpu_data_i = TSU_SET_TXMSGID;
+  cpu_data_i = TSU_MASK_TXMSGID;
   cpu_wr(cpu_addr_i, cpu_data_i);
 
   // RESET TSU
