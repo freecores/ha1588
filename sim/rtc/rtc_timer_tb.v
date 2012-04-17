@@ -130,7 +130,18 @@ initial begin
 	// fine tune time difference by 0
 	adj_ld            =  1'b1;
 	adj_ld_data       = 32'd100;
-	period_adj[39:32] =  8'hfb;        // ns           // negative change
+	period_adj[39:32] =  8'hfb;        // ns           // -5 negative change
+	period_adj[31: 0] = 32'h00000000;  // ns fraction
+	@(posedge clk);
+	adj_ld            =  1'b0;
+
+	for (i=0; i<300; i=i+1) @(posedge clk);
+	
+	for (i=0; i<20; i=i+1) @(posedge clk);
+	// fine tune time difference by 0
+	adj_ld            =  1'b1;
+	adj_ld_data       = 32'd100;
+	period_adj[39:32] =  8'hf0;        // ns           // -16 negative change
 	period_adj[31: 0] = 32'h00000000;  // ns fraction
 	@(posedge clk);
 	adj_ld            =  1'b0;
