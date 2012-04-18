@@ -10,7 +10,7 @@
          type = "int";
       }
    }
-   element ha1588_0
+   element ha1588_comp
    {
       datum _sortIndex
       {
@@ -21,7 +21,7 @@
    element ha1588_inst
    {
    }
-   element mm_master_bfm_0
+   element master_bfm
    {
       datum _sortIndex
       {
@@ -34,30 +34,31 @@
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
  <parameter name="deviceFamily" value="CYCLONEIII" />
  <parameter name="fabricMode" value="SOPC" />
- <parameter name="generateLegacySim" value="true" />
+ <parameter name="generateLegacySim" value="false" />
  <parameter name="generationId" value="0" />
  <parameter name="globalResetBus" value="true" />
  <parameter name="hdlLanguage" value="VERILOG" />
  <parameter name="maxAdditionalLatency" value="0" />
  <parameter name="projectName" value="ha1588_inst.qpf" />
  <parameter name="sopcBorderPoints" value="true" />
- <parameter name="systemHash" value="4608333994" />
- <parameter name="timeStamp" value="1333703471124" />
+ <parameter name="systemHash" value="2156315500" />
+ <parameter name="timeStamp" value="1334738091063" />
  <module kind="clock_source" version="10.1" enabled="1" name="clk_0">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
- <module kind="ha1588" version="1.0" enabled="1" name="ha1588_0">
+ <module kind="ha1588" version="1.0" enabled="1" name="ha1588_comp">
+  <parameter name="addr_is_in_word" value="true" />
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
  </module>
  <module
    kind="altera_avalon_mm_master_bfm"
    version="10.1"
    enabled="1"
-   name="mm_master_bfm_0">
-  <parameter name="AV_ADDRESS_W" value="32" />
+   name="master_bfm">
+  <parameter name="AV_ADDRESS_W" value="16" />
   <parameter name="AV_SYMBOL_W" value="8" />
   <parameter name="AV_NUMSYMBOLS" value="4" />
   <parameter name="AV_BURSTCOUNT_W" value="3" />
@@ -66,7 +67,7 @@
   <parameter name="USE_READ" value="1" />
   <parameter name="USE_WRITE" value="1" />
   <parameter name="USE_ADDRESS" value="1" />
-  <parameter name="USE_BYTE_ENABLE" value="1" />
+  <parameter name="USE_BYTE_ENABLE" value="0" />
   <parameter name="USE_BURSTCOUNT" value="0" />
   <parameter name="USE_READ_DATA" value="1" />
   <parameter name="USE_READ_DATA_VALID" value="1" />
@@ -86,28 +87,24 @@
   <parameter name="ASSERT_HIGH_WRITE" value="1" />
   <parameter name="ASSERT_HIGH_BYTEENABLE" value="1" />
   <parameter name="ASSERT_HIGH_READDATAVALID" value="1" />
-  <parameter name="ASSERT_HIGH_ARBITERLOCK" value="1" />
+  <parameter name="ASSERT_HIGH_ARBITERLOCK" value="0" />
   <parameter name="AV_BURST_LINEWRAP" value="0" />
   <parameter name="AV_BURST_BNDR_ONLY" value="0" />
   <parameter name="AV_MAX_PENDING_READS" value="1" />
-  <parameter name="AV_FIX_READ_LATENCY" value="1" />
-  <parameter name="AV_READ_WAIT_TIME" value="1" />
+  <parameter name="AV_FIX_READ_LATENCY" value="0" />
+  <parameter name="AV_READ_WAIT_TIME" value="0" />
   <parameter name="AV_WRITE_WAIT_TIME" value="0" />
   <parameter name="REGISTER_WAITREQUEST" value="0" />
   <parameter name="AV_REGISTERINCOMINGSIGNALS" value="0" />
   <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
  </module>
- <connection kind="clock" version="10.1" start="clk_0.clk" end="ha1588_0.clock" />
- <connection
-   kind="clock"
-   version="10.1"
-   start="clk_0.clk"
-   end="mm_master_bfm_0.clk" />
+ <connection kind="clock" version="10.1" start="clk_0.clk" end="ha1588_comp.clock" />
+ <connection kind="clock" version="10.1" start="clk_0.clk" end="master_bfm.clk" />
  <connection
    kind="avalon"
    version="10.1"
-   start="mm_master_bfm_0.m0"
-   end="ha1588_0.avalon_slave">
+   start="master_bfm.m0"
+   end="ha1588_comp.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
  </connection>

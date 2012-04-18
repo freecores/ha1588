@@ -43,6 +43,17 @@ module ha1588 (
   input [7:0] tx_gmii_data
 );
 
+parameter addr_is_in_word = 0;
+wire [ 5: 0] word_addr_in;
+wire [ 7: 0] byte_addr_in;
+generate
+  if (addr_is_in_word)
+    assign word_addr_in = addr_in[ 5: 0];
+  else
+    assign word_addr_in = addr_in[ 7: 2];
+endgenerate
+assign byte_addr_in = {word_addr_in, 2'b00};
+
 wire rtc_rst;
 wire rtc_time_ld, rtc_period_ld, rtc_adj_ld, adj_ld_done;
 wire [37:0] rtc_time_reg_ns;
@@ -71,7 +82,7 @@ rgs u_rgs
   .clk(clk),
   .wr_in(wr_in),
   .rd_in(rd_in),
-  .addr_in(addr_in),
+  .addr_in(byte_addr_in),
   .data_in(data_in),
   .data_out(data_out),
   .rtc_clk_in(rtc_clk),

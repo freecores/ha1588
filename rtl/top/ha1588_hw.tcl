@@ -60,6 +60,16 @@ add_file ../../rtl/tsu/ptp_queue.v {SYNTHESIS SIMULATION}
 # +-----------------------------------
 # | parameters
 # | 
+add_parameter addr_is_in_word BOOLEAN true ""
+set_parameter_property addr_is_in_word DEFAULT_VALUE true
+set_parameter_property addr_is_in_word DISPLAY_NAME addr_is_in_word
+set_parameter_property addr_is_in_word WIDTH ""
+set_parameter_property addr_is_in_word TYPE BOOLEAN
+set_parameter_property addr_is_in_word ENABLED false
+set_parameter_property addr_is_in_word UNITS None
+set_parameter_property addr_is_in_word DESCRIPTION ""
+set_parameter_property addr_is_in_word AFFECTS_GENERATION false
+set_parameter_property addr_is_in_word HDL_PARAMETER true
 # | 
 # +-----------------------------------
 
