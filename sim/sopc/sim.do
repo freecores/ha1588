@@ -1,7 +1,12 @@
 quit -sim
 
+vlib altera
+vdel -lib altera -all
 vlib work
 vdel -lib work -all
+
+vlib altera
+vlog -work altera altera_mf.v
 
 vlib work
 vmap work work
@@ -11,7 +16,7 @@ vlog -sv -work work $env(QUARTUS_ROOTDIR)/../ip/altera/sopc_builder_ip/verificat
 vlog -sv -work work ../../rtl/sopc/ha1588_inst.v
 vlog -sv -work work ./master_bfm_tb.v
 
-vsim -novopt work.master_bfm_tb
+vsim -novopt -L altera work.master_bfm_tb
 
 log -r */*
 radix -hexadecimal

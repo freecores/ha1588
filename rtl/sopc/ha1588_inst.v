@@ -707,9 +707,9 @@ endmodule
 // `define NO_PLI 1
 // `endif
 
-`include "c:/altera/10.1/quartus/eda/sim_lib/altera_mf.v"
-`include "c:/altera/10.1/quartus/eda/sim_lib/220model.v"
-`include "c:/altera/10.1/quartus/eda/sim_lib/sgate.v"
+//`include "c:/altera/10.1/quartus/eda/sim_lib/altera_mf.v"
+//`include "c:/altera/10.1/quartus/eda/sim_lib/220model.v"
+//`include "c:/altera/10.1/quartus/eda/sim_lib/sgate.v"
 // C:/altera/10.1/ip/altera/sopc_builder_ip/verification/lib/verbosity_pkg.sv
 // C:/altera/10.1/ip/altera/sopc_builder_ip/verification/lib/avalon_mm_pkg.sv
 // C:/altera/10.1/ip/altera/sopc_builder_ip/verification/altera_avalon_mm_master_bfm/altera_avalon_mm_master_bfm.sv
