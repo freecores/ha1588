@@ -22,4 +22,4 @@ log -r */*
 radix -hexadecimal
 do wave.do
 
-run 1000 ns
+run -all
