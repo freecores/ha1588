@@ -91,8 +91,8 @@ begin : feeder_tx
                 gmii_txctrl = 1'b0;
                 gmii_txdata = 8'h00;
             end
-            // send frame preamble and sfd 5555555d=4*8
-            repeat (3)
+            // send frame preamble and sfd 55555555555555d5=8*8
+            repeat (7)
             begin
                 @(posedge gmii_txclk_offset);
                 gmii_txctrl = 1'b1;
@@ -100,7 +100,7 @@ begin : feeder_tx
             end
                 @(posedge gmii_txclk_offset)
                 gmii_txctrl = 1'b1;
-                gmii_txdata = 8'h5d;
+                gmii_txdata = 8'hd5;
             // send frame content
             for (index_tx=0; index_tx<packet_leng_tx; index_tx=index_tx+1)
             begin
