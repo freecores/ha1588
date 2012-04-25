@@ -23,6 +23,8 @@
 
 module ha1588_tb ();
 
+parameter giga_mode = 1'b1;
+
 reg up_clk;
 wire up_wr, up_rd;
 wire [ 7:0] up_addr;
@@ -56,12 +58,14 @@ gmii_rx_bfm NIC_DRV_RX_BFM (
   .gmii_rxctrl(rx_gmii_ctrl),
   .gmii_rxdata(rx_gmii_data)
 );
+defparam NIC_DRV_RX_BFM.giga_mode = giga_mode;
 
 gmii_tx_bfm NIC_DRV_TX_BFM (
   .gmii_txclk(tx_gmii_clk),
   .gmii_txctrl(tx_gmii_ctrl),
   .gmii_txdata(tx_gmii_data)
 );
+defparam NIC_DRV_TX_BFM.giga_mode = giga_mode;
 
 ptp_drv_bfm_sv PTP_DRV_BFM (
   .up_clk(up_clk),
@@ -88,14 +92,16 @@ ha1588 PTP_HA_DUT (
   .rx_gmii_clk(rx_gmii_clk),
   .rx_gmii_ctrl(rx_gmii_ctrl),
   .rx_gmii_data(rx_gmii_data),
+  .rx_giga_mode(giga_mode),
   .tx_gmii_clk(tx_gmii_clk),
   .tx_gmii_ctrl(tx_gmii_ctrl),
-  .tx_gmii_data(tx_gmii_data)
+  .tx_gmii_data(tx_gmii_data),
+  .tx_giga_mode(giga_mode)
 );
 
 initial begin
-	ha1588_tb.PTP_DRV_BFM.up_start = 1;
-	#100000000 $stop;
+    ha1588_tb.PTP_DRV_BFM.up_start = 1;
+    #100000000 $stop;
 end
 
 endmodule

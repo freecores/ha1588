@@ -37,10 +37,12 @@ module ha1588 (
   input       rx_gmii_clk,
   input       rx_gmii_ctrl,
   input [7:0] rx_gmii_data,
+  input       rx_giga_mode,
 
   input       tx_gmii_clk,
   input       tx_gmii_ctrl,
-  input [7:0] tx_gmii_data
+  input [7:0] tx_gmii_data,
+  input       tx_giga_mode
 );
 
 parameter addr_is_in_word = 0;
@@ -137,6 +139,7 @@ tsu u_rx_tsu
   .gmii_clk(rx_gmii_clk),
   .gmii_ctrl(rx_gmii_ctrl),
   .gmii_data(rx_gmii_data),
+  .giga_mode(rx_giga_mode),
   .ptp_msgid_mask(rx_q_ptp_msgid_mask),
   .rtc_timer_clk(rtc_clk),
   .rtc_timer_in(rtc_time_ptp_val),
@@ -153,6 +156,7 @@ tsu u_tx_tsu
   .gmii_clk(tx_gmii_clk),
   .gmii_ctrl(tx_gmii_ctrl),
   .gmii_data(tx_gmii_data),
+  .giga_mode(tx_giga_mode),
   .ptp_msgid_mask(tx_q_ptp_msgid_mask),
   .rtc_timer_clk(rtc_clk),
   .rtc_timer_in(rtc_time_ptp_val),

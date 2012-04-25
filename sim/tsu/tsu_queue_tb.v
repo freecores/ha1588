@@ -23,6 +23,8 @@
 
 module tsu_queue_tb; 
 
+parameter giga_mode = 1'b1;
+
 reg         rst;
 wire        gmii_rxclk;
 wire        gmii_rxctrl;
@@ -69,6 +71,7 @@ tsu DUT_RX
     .gmii_clk(gmii_rxclk),
     .gmii_ctrl(gmii_rxctrl),
     .gmii_data(gmii_rxdata),
+    .giga_mode(giga_mode),
 
     .ptp_msgid_mask(8'b11111111),
 
@@ -88,6 +91,7 @@ gmii_rx_bfm BFM_RX
     .gmii_rxctrl(gmii_rxctrl),
     .gmii_rxdata(gmii_rxdata)
   );
+defparam BFM_RX.giga_mode = giga_mode;
 
 
 tsu DUT_TX
@@ -97,6 +101,7 @@ tsu DUT_TX
     .gmii_clk(gmii_txclk),
     .gmii_ctrl(gmii_txctrl),
     .gmii_data(gmii_txdata),
+    .giga_mode(giga_mode),
 
     .ptp_msgid_mask(8'b11111111),
 
@@ -116,6 +121,7 @@ gmii_tx_bfm BFM_TX
     .gmii_txctrl(gmii_txctrl),
     .gmii_txdata(gmii_txdata)
   );
+defparam BFM_TX.giga_mode = giga_mode;
 
 integer rx_ptp_event_cnt, rx_ptp_mismatch_cnt;
 integer ref_file_handle_rx, return_fscanf_rx, ref_num_rx;
@@ -157,21 +163,19 @@ initial begin
     @(posedge BFM_TX.eof_tx);
   join
 
-  if      (rx_ptp_event_cnt == 0 || tx_ptp_event_cnt == 0) begin
-    if (rx_ptp_event_cnt == 0)
-    $display("RX Parser Test Fail: found 0 PTP-EVENT!");
-    if (tx_ptp_event_cnt == 0)
-    $display("TX Parser Test Fail: found 0 PTP-EVENT!");
-  end
-  else if (rx_ptp_mismatch_cnt > 0 || tx_ptp_mismatch_cnt > 0) begin
-    if (rx_ptp_mismatch_cnt > 0)
-    $display("Rx Parser Mismatch Found: RX-PTP-EVENT-MISMATCH = %d", rx_ptp_mismatch_cnt);
-    if (tx_ptp_mismatch_cnt > 0)
-    $display("Tx Parser Mismatch Found: TX-PTP-EVENT-MISMATCH = %d", tx_ptp_mismatch_cnt);
-  end
-  else begin
-    $display("RX and TX Parser Test Pass:\n RX-PTP-EVENT = %d\n TX-PTP-EVENT = %d", rx_ptp_event_cnt, tx_ptp_event_cnt);
-  end
+  if (rx_ptp_event_cnt == 0)
+    $display("RX Parser Test Fail: found 0 PTP-EVENT!\n");
+  if (tx_ptp_event_cnt == 0)
+    $display("TX Parser Test Fail: found 0 PTP-EVENT!\n");
+  if (rx_ptp_mismatch_cnt > 0)
+    $display("Rx Parser Mismatch Found: RX-PTP-EVENT-MISMATCH = %d\n", rx_ptp_mismatch_cnt);
+  if (tx_ptp_mismatch_cnt > 0)
+    $display("Tx Parser Mismatch Found: TX-PTP-EVENT-MISMATCH = %d\n", tx_ptp_mismatch_cnt);
+
+  if (rx_ptp_event_cnt > 0 && rx_ptp_mismatch_cnt == 0)
+    $display("RX Parser Test Pass: RX-PTP-EVENT = %d\n", rx_ptp_event_cnt);
+  if (tx_ptp_event_cnt > 0 && tx_ptp_mismatch_cnt == 0)
+    $display("TX Parser Test Pass: TX-PTP-EVENT = %d\n", tx_ptp_event_cnt);
 
   #100 $stop;
 end
