@@ -548,9 +548,11 @@ module ha1588_inst (
                       rtc_clk_to_the_ha1588_comp,
                       rtc_time_ptp_ns_from_the_ha1588_comp,
                       rtc_time_ptp_sec_from_the_ha1588_comp,
+                      rx_giga_mode_to_the_ha1588_comp,
                       rx_gmii_clk_to_the_ha1588_comp,
                       rx_gmii_ctrl_to_the_ha1588_comp,
                       rx_gmii_data_to_the_ha1588_comp,
+                      tx_giga_mode_to_the_ha1588_comp,
                       tx_gmii_clk_to_the_ha1588_comp,
                       tx_gmii_ctrl_to_the_ha1588_comp,
                       tx_gmii_data_to_the_ha1588_comp
@@ -562,9 +564,11 @@ module ha1588_inst (
   input            clk_0;
   input            reset_n;
   input            rtc_clk_to_the_ha1588_comp;
+  input            rx_giga_mode_to_the_ha1588_comp;
   input            rx_gmii_clk_to_the_ha1588_comp;
   input            rx_gmii_ctrl_to_the_ha1588_comp;
   input   [  7: 0] rx_gmii_data_to_the_ha1588_comp;
+  input            tx_giga_mode_to_the_ha1588_comp;
   input            tx_gmii_clk_to_the_ha1588_comp;
   input            tx_gmii_ctrl_to_the_ha1588_comp;
   input   [  7: 0] tx_gmii_data_to_the_ha1588_comp;
@@ -629,9 +633,11 @@ module ha1588_inst (
       .rtc_clk          (rtc_clk_to_the_ha1588_comp),
       .rtc_time_ptp_ns  (rtc_time_ptp_ns_from_the_ha1588_comp),
       .rtc_time_ptp_sec (rtc_time_ptp_sec_from_the_ha1588_comp),
+      .rx_giga_mode     (rx_giga_mode_to_the_ha1588_comp),
       .rx_gmii_clk      (rx_gmii_clk_to_the_ha1588_comp),
       .rx_gmii_ctrl     (rx_gmii_ctrl_to_the_ha1588_comp),
       .rx_gmii_data     (rx_gmii_data_to_the_ha1588_comp),
+      .tx_giga_mode     (tx_giga_mode_to_the_ha1588_comp),
       .tx_gmii_clk      (tx_gmii_clk_to_the_ha1588_comp),
       .tx_gmii_ctrl     (tx_gmii_ctrl_to_the_ha1588_comp),
       .tx_gmii_data     (tx_gmii_data_to_the_ha1588_comp),
@@ -735,9 +741,11 @@ module test_bench
   wire             rtc_clk_to_the_ha1588_comp;
   wire    [ 31: 0] rtc_time_ptp_ns_from_the_ha1588_comp;
   wire    [ 47: 0] rtc_time_ptp_sec_from_the_ha1588_comp;
+  wire             rx_giga_mode_to_the_ha1588_comp;
   wire             rx_gmii_clk_to_the_ha1588_comp;
   wire             rx_gmii_ctrl_to_the_ha1588_comp;
   wire    [  7: 0] rx_gmii_data_to_the_ha1588_comp;
+  wire             tx_giga_mode_to_the_ha1588_comp;
   wire             tx_gmii_clk_to_the_ha1588_comp;
   wire             tx_gmii_ctrl_to_the_ha1588_comp;
   wire    [  7: 0] tx_gmii_data_to_the_ha1588_comp;
@@ -755,9 +763,11 @@ module test_bench
       .rtc_clk_to_the_ha1588_comp            (rtc_clk_to_the_ha1588_comp),
       .rtc_time_ptp_ns_from_the_ha1588_comp  (rtc_time_ptp_ns_from_the_ha1588_comp),
       .rtc_time_ptp_sec_from_the_ha1588_comp (rtc_time_ptp_sec_from_the_ha1588_comp),
+      .rx_giga_mode_to_the_ha1588_comp       (rx_giga_mode_to_the_ha1588_comp),
       .rx_gmii_clk_to_the_ha1588_comp        (rx_gmii_clk_to_the_ha1588_comp),
       .rx_gmii_ctrl_to_the_ha1588_comp       (rx_gmii_ctrl_to_the_ha1588_comp),
       .rx_gmii_data_to_the_ha1588_comp       (rx_gmii_data_to_the_ha1588_comp),
+      .tx_giga_mode_to_the_ha1588_comp       (tx_giga_mode_to_the_ha1588_comp),
       .tx_gmii_clk_to_the_ha1588_comp        (tx_gmii_clk_to_the_ha1588_comp),
       .tx_gmii_ctrl_to_the_ha1588_comp       (tx_gmii_ctrl_to_the_ha1588_comp),
       .tx_gmii_data_to_the_ha1588_comp       (tx_gmii_data_to_the_ha1588_comp)

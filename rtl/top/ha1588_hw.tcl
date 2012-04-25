@@ -146,8 +146,10 @@ set_interface_property gmii_monitor ENABLED true
 add_interface_port gmii_monitor rx_gmii_clk export Input 1
 add_interface_port gmii_monitor rx_gmii_ctrl export Input 1
 add_interface_port gmii_monitor rx_gmii_data export Input 8
+add_interface_port gmii_monitor rx_giga_mode export Input 1
 add_interface_port gmii_monitor tx_gmii_clk export Input 1
 add_interface_port gmii_monitor tx_gmii_ctrl export Input 1
 add_interface_port gmii_monitor tx_gmii_data export Input 8
+add_interface_port gmii_monitor tx_giga_mode export Input 1
 # | 
 # +-----------------------------------

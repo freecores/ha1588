@@ -17,9 +17,11 @@ module ha1588_comp (
 		input  wire        rx_gmii_clk,      // gmii_monitor.export
 		input  wire        rx_gmii_ctrl,     //             .export
 		input  wire [7:0]  rx_gmii_data,     //             .export
+		input  wire        rx_giga_mode,     //             .export
 		input  wire        tx_gmii_clk,      //             .export
 		input  wire        tx_gmii_ctrl,     //             .export
-		input  wire [7:0]  tx_gmii_data      //             .export
+		input  wire [7:0]  tx_gmii_data,     //             .export
+		input  wire        tx_giga_mode      //             .export
 	);
 
 	ha1588 #(
@@ -38,9 +40,11 @@ module ha1588_comp (
 		.rx_gmii_clk      (rx_gmii_clk),      // gmii_monitor.export
 		.rx_gmii_ctrl     (rx_gmii_ctrl),     //             .export
 		.rx_gmii_data     (rx_gmii_data),     //             .export
+		.rx_giga_mode     (rx_giga_mode),     //             .export
 		.tx_gmii_clk      (tx_gmii_clk),      //             .export
 		.tx_gmii_ctrl     (tx_gmii_ctrl),     //             .export
-		.tx_gmii_data     (tx_gmii_data)      //             .export
+		.tx_gmii_data     (tx_gmii_data),     //             .export
+		.tx_giga_mode     (tx_giga_mode)      //             .export
 	);
 
 endmodule
