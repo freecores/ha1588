@@ -35,10 +35,22 @@ module ptp_parser (
   output reg [31:0] ptp_infor
 );
 
+// constant values
 parameter c_vlan_tpid_1 = 16'h8100;
 parameter c_vlan_tpid_2 = 16'h88a8;
 parameter c_vlan_tpid_3 = 16'h9100;
 
+parameter c_mpls_type_1 = 16'h8847;
+parameter c_mpls_type_2 = 16'h8848;
+
+parameter c_ipv4_type   = 16'h0800;
+parameter c_ipv6_type   = 16'h86dd;
+
+parameter c_ptp2_type   = 16'h88f7;
+parameter c_ptp4_port_1 = 16'h013f;
+parameter c_ptp4_port_2 = 16'h0140;
+
+// buffer data input
 reg [31:0] int_data_d1;
 always @(posedge rst or posedge clk) begin
   if (rst) begin
@@ -124,7 +136,7 @@ always @(posedge rst or posedge clk) begin
 
     // bypass mpls
     if      (int_valid && (int_cnt==10'd4 || bypass_vlan && int_cnt==10'd5) && 
-            (int_data[31:16]==16'h8847 || int_data[31:16]==16'h8848))  // ether_type == mpls
+            (int_data[31:16]==c_mpls_type_1 || int_data[31:16]==c_mpls_type_2))  // ether_type == mpls
       bypass_mpls <= 1'b1;
     else if (int_valid &&  int_cnt==10'd5 && bypass_mpls && 
              int_data[24]==1'b0)  // bottom of label stack == 0
@@ -134,14 +146,14 @@ always @(posedge rst or posedge clk) begin
 
     // bypass ipv4
     if      (int_valid && (int_cnt==10'd4 || (bypass_vlan || bypass_mpls) && int_cnt==10'd5) && bypass_ipv4_cnt==10'd0 &&
-            (int_data[31:16]==16'h0800 || bypass_mpls) && int_data[15:12]==4'h4)  // ether_type == ipv4, ip_version == 4
+            (int_data[31:16]==c_ipv4_type || bypass_mpls) && int_data[15:12]==4'h4)  // ether_type == ipv4, ip_version == 4
       bypass_ipv4 <= 1'b1;
     else if (int_valid && bypass_ipv4_cnt==10'd4)
       bypass_ipv4 <= 1'b0;
 
     // bypass ipv6
     if      (int_valid && (int_cnt==10'd4 || (bypass_vlan || bypass_mpls) && int_cnt==10'd5) && bypass_ipv6_cnt==10'd0 &&
-            (int_data[31:16]==16'h86dd || bypass_mpls) && int_data[15:12]==4'h6)  // ether_type == ipv6, ip_version == 6
+            (int_data[31:16]==c_ipv6_type || bypass_mpls) && int_data[15:12]==4'h6)  // ether_type == ipv6, ip_version == 6
       bypass_ipv6 <= 1'b1;
     else if (int_valid && bypass_ipv6_cnt==10'd9)
       bypass_ipv6 <= 1'b0;
@@ -161,15 +173,15 @@ always @(posedge rst or posedge clk) begin
       bypass_udp <= 1'b0;
 
     // check if it is L2 PTP
-    if (int_valid && (int_cnt==10'd4 || bypass_vlan && int_cnt==10'd5) && int_data[31:16]==16'h88F7)  // ether_type == ptp
+    if (int_valid && (int_cnt==10'd4 || bypass_vlan && int_cnt==10'd5) && int_data[31:16]==c_ptp2_type)  // ether_type == ptp
       ptp_l2 <= 1'b1;
     // check if it is L4 PTP
     if (int_valid && bypass_udp_cnt==10'd0 && bypass_udp &&
-       (int_data[31:16]==16'h013f || int_data[31:16]==16'h0140))  // udp_dest_port == ptp_event || ptp_general
+       (int_data[31:16]==c_ptp4_port_1 || int_data[31:16]==c_ptp4_port_2))  // udp_dest_port == ptp_event || ptp_general
       ptp_l4 <= 1'b1;
 
     // check if it is PTP Event message
-    if      (int_valid && (int_cnt==10'd4 || bypass_vlan && int_cnt==10'd5) && int_data[31:16]==16'h88F7 &&
+    if      (int_valid && (int_cnt==10'd4 || bypass_vlan && int_cnt==10'd5) && int_data[31:16]==c_ptp2_type &&
             (ptp_msgid_mask[int_data[11: 8]]))  // ptp_message_id == ptp_event
       ptp_event <= 1'b1;
     else if (int_valid && int_cnt==10'd5 && bypass_udp_cnt==10'd1 && ptp_l4 &&
