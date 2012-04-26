@@ -47,6 +47,7 @@ module rtc_timer_tb  ;
       .time_reg_sec_in (time_reg_sec_in ) ,
       .time_reg_ns (time_reg_ns ) ,
       .time_reg_sec (time_reg_sec ) ,
+      .time_one_pps ( ) ,
       .time_ptp_ns ( ) ,
       .time_ptp_sec ( ) ,
       .period_ld (period_ld ) ,

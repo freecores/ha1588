@@ -39,6 +39,8 @@ module rtc (
   // time output: for internal with ns fraction
   output [37:0] time_reg_ns,  // 37:8 ns, 7:0 ns_fraction
   output [47:0] time_reg_sec, // 47:0 sec
+  // time output: for external with one pps accuracy 
+  output reg    time_one_pps,
   // time output: for external with ptp standard
   output [31:0] time_ptp_ns,  // 31:0 ns
   output [47:0] time_ptp_sec  // 47:0 sec
@@ -160,5 +162,12 @@ assign time_reg_sec = time_acc_48s;
 // time output (48bit_s + 32bit_ns)
 assign time_ptp_ns  = {2'b00, time_acc_30n_08f[37:8]};
 assign time_ptp_sec = time_acc_48s;
+// time output one pps
+always @(posedge rst or posedge clk) begin
+  if (rst)
+    time_one_pps <= 1'b0;
+  else
+    time_one_pps <= time_acc_48s_inc;
+end
 
 endmodule

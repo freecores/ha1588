@@ -33,6 +33,7 @@ module ha1588 (
   input         rtc_clk,
   output [31:0] rtc_time_ptp_ns,
   output [47:0] rtc_time_ptp_sec,
+  output        rtc_time_one_pps,
 
   input       rx_gmii_clk,
   input       rx_gmii_ctrl,
@@ -129,6 +130,7 @@ rtc u_rtc
   .period_adj(rtc_period_adj),
   .time_reg_ns(rtc_time_reg_ns_val),
   .time_reg_sec(rtc_time_reg_sec_val),
+  .time_one_pps(rtc_time_one_pps),
   .time_ptp_ns(rtc_time_ptp_ns),
   .time_ptp_sec(rtc_time_ptp_sec)
 );

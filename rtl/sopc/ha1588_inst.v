@@ -546,6 +546,7 @@ module ha1588_inst (
 
                      // the_ha1588_comp
                       rtc_clk_to_the_ha1588_comp,
+                      rtc_time_one_pps_from_the_ha1588_comp,
                       rtc_time_ptp_ns_from_the_ha1588_comp,
                       rtc_time_ptp_sec_from_the_ha1588_comp,
                       rx_giga_mode_to_the_ha1588_comp,
@@ -559,6 +560,7 @@ module ha1588_inst (
                    )
 ;
 
+  output           rtc_time_one_pps_from_the_ha1588_comp;
   output  [ 31: 0] rtc_time_ptp_ns_from_the_ha1588_comp;
   output  [ 47: 0] rtc_time_ptp_sec_from_the_ha1588_comp;
   input            clk_0;
@@ -597,6 +599,7 @@ module ha1588_inst (
   wire             master_bfm_read_data_valid_ha1588_comp_avalon_slave;
   wire             master_bfm_requests_ha1588_comp_avalon_slave;
   wire             reset_n_sources;
+  wire             rtc_time_one_pps_from_the_ha1588_comp;
   wire    [ 31: 0] rtc_time_ptp_ns_from_the_ha1588_comp;
   wire    [ 47: 0] rtc_time_ptp_sec_from_the_ha1588_comp;
   ha1588_comp_avalon_slave_arbitrator the_ha1588_comp_avalon_slave
@@ -631,6 +634,7 @@ module ha1588_inst (
       .rd_in            (ha1588_comp_avalon_slave_read),
       .rst              (ha1588_comp_avalon_slave_reset),
       .rtc_clk          (rtc_clk_to_the_ha1588_comp),
+      .rtc_time_one_pps (rtc_time_one_pps_from_the_ha1588_comp),
       .rtc_time_ptp_ns  (rtc_time_ptp_ns_from_the_ha1588_comp),
       .rtc_time_ptp_sec (rtc_time_ptp_sec_from_the_ha1588_comp),
       .rx_giga_mode     (rx_giga_mode_to_the_ha1588_comp),
@@ -739,6 +743,7 @@ module test_bench
   reg              clk_0;
   reg              reset_n;
   wire             rtc_clk_to_the_ha1588_comp;
+  wire             rtc_time_one_pps_from_the_ha1588_comp;
   wire    [ 31: 0] rtc_time_ptp_ns_from_the_ha1588_comp;
   wire    [ 47: 0] rtc_time_ptp_sec_from_the_ha1588_comp;
   wire             rx_giga_mode_to_the_ha1588_comp;
@@ -761,6 +766,7 @@ module test_bench
       .clk_0                                 (clk_0),
       .reset_n                               (reset_n),
       .rtc_clk_to_the_ha1588_comp            (rtc_clk_to_the_ha1588_comp),
+      .rtc_time_one_pps_from_the_ha1588_comp (rtc_time_one_pps_from_the_ha1588_comp),
       .rtc_time_ptp_ns_from_the_ha1588_comp  (rtc_time_ptp_ns_from_the_ha1588_comp),
       .rtc_time_ptp_sec_from_the_ha1588_comp (rtc_time_ptp_sec_from_the_ha1588_comp),
       .rx_giga_mode_to_the_ha1588_comp       (rx_giga_mode_to_the_ha1588_comp),

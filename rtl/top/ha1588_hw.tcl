@@ -133,6 +133,7 @@ set_interface_property ref_clock ENABLED true
 add_interface_port ref_clock rtc_clk export Input 1
 add_interface_port ref_clock rtc_time_ptp_ns export Output 32
 add_interface_port ref_clock rtc_time_ptp_sec export Output 48
+add_interface_port ref_clock rtc_time_one_pps export Output 1
 # | 
 # +-----------------------------------
 

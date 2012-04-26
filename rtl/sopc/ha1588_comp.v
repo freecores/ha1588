@@ -14,6 +14,7 @@ module ha1588_comp (
 		input  wire        rtc_clk,          //    ref_clock.export
 		output wire [31:0] rtc_time_ptp_ns,  //             .export
 		output wire [47:0] rtc_time_ptp_sec, //             .export
+		output wire        rtc_time_one_pps, //             .export
 		input  wire        rx_gmii_clk,      // gmii_monitor.export
 		input  wire        rx_gmii_ctrl,     //             .export
 		input  wire [7:0]  rx_gmii_data,     //             .export
@@ -37,6 +38,7 @@ module ha1588_comp (
 		.rtc_clk          (rtc_clk),          //    ref_clock.export
 		.rtc_time_ptp_ns  (rtc_time_ptp_ns),  //             .export
 		.rtc_time_ptp_sec (rtc_time_ptp_sec), //             .export
+		.rtc_time_one_pps (rtc_time_one_pps), //             .export
 		.rx_gmii_clk      (rx_gmii_clk),      // gmii_monitor.export
 		.rx_gmii_ctrl     (rx_gmii_ctrl),     //             .export
 		.rx_gmii_data     (rx_gmii_data),     //             .export
