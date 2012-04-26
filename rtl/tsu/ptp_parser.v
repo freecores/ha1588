@@ -35,6 +35,10 @@ module ptp_parser (
   output reg [31:0] ptp_infor
 );
 
+parameter c_vlan_tpid_1 = 16'h8100;
+parameter c_vlan_tpid_2 = 16'h88a8;
+parameter c_vlan_tpid_3 = 16'h9100;
+
 reg [31:0] int_data_d1;
 always @(posedge rst or posedge clk) begin
   if (rst) begin
@@ -111,11 +115,9 @@ always @(posedge rst or posedge clk) begin
   end
   else begin
     // bypass vlan
-    if      (int_valid && int_cnt==10'd4 && int_data[31:16]==16'h8100)  // ether_type == cvlan
+    if      (int_valid && int_cnt==10'd4 && (int_data[31:16]==c_vlan_tpid_1 || int_data[31:16]==c_vlan_tpid_2 || int_data[31:16]==c_vlan_tpid_3))  // ether_type == vlan
       bypass_vlan <= 1'b1;
-    else if (int_valid && int_cnt==10'd4 && int_data[31:16]==16'h9100)  // ether_type == svlan
-      bypass_vlan <= 1'b1;
-    else if (int_valid && int_cnt==10'd5 && int_data[31:16]==16'h8100 && bypass_vlan)  // svlan_type == cvlan
+    else if (int_valid && int_cnt==10'd5 && (int_data[31:16]==c_vlan_tpid_1 || int_data[31:16]==c_vlan_tpid_2 || int_data[31:16]==c_vlan_tpid_3) && bypass_vlan)  // vlan_type == vlan
       bypass_vlan <= 1'b1;
     else if (int_valid && bypass_vlan)
       bypass_vlan <= 1'b0;
