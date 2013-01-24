@@ -32,13 +32,12 @@ vlog -work work -sv ptp_drv_bfm/ptp_drv_bfm.v
 # Sytemverilog DPI steps to combine sv and c
 # step 1: generate dpiheader.h
 vlog -work work -sv -dpiheader dpiheader.h ptp_drv_bfm/ptp_drv_bfm.v
-# step 2: generate ptp_drv_bfm.obj
-vsim -dpiexportobj ptp_drv_bfm_sv ptp_drv_bfm_sv
-# step 3: generate ptp_drv_bfm_c.obj
-gcc -c -I $::env(MODEL_TECH)/../include ptp_drv_bfm/ptp_drv_bfm.c
-# step 4: generate ptp_drv_bfm_c.dll
-gcc -shared -Bsymbolic -o ptp_drv_bfm_c.dll ptp_drv_bfm.o \
-    ptp_drv_bfm_sv.obj -L $::env(MODEL_TECH) -lmtipli
+## step 2: generate ptp_drv_bfm.obj
+#vsim -dpiexportobj ptp_drv_bfm_sv ptp_drv_bfm
+# step 3: generate ptp_drv_bfm_c.so
+exec gcc -c -fPIC -I $::env(MODEL_TECH)/../include ptp_drv_bfm/ptp_drv_bfm.c
+# step 4: generate ptp_drv_bfm_c.o
+exec gcc -shared -Bsymbolic -o ptp_drv_bfm_c.so ptp_drv_bfm.o
 
 vsim -novopt \
      -L altera \
