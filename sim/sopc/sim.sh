@@ -1,1 +1,0 @@
-vsim -do sim.do

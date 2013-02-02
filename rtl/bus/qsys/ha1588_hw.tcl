@@ -11,12 +11,12 @@
 # | 
 # | ha1588.v
 # | 
-# |    ../../rtl/top/ha1588.v syn, sim
-# |    ../../rtl/reg/reg.v syn, sim
-# |    ../../rtl/rtc/rtc.v syn, sim
-# |    ../../rtl/tsu/tsu.v syn, sim
-# |    ../../rtl/tsu/ptp_parser.v syn, sim
-# |    ../../rtl/tsu/ptp_queue.v syn, sim
+# |    ../../../rtl/top/ha1588.v syn, sim
+# |    ../../../rtl/reg/reg.v syn, sim
+# |    ../../../rtl/rtc/rtc.v syn, sim
+# |    ../../../rtl/tsu/tsu.v syn, sim
+# |    ../../../rtl/tsu/ptp_parser.v syn, sim
+# |    ../../../rtl/tsu/ptp_queue.v syn, sim
 # | 
 # +-----------------------------------
 
@@ -48,12 +48,12 @@ set_module_property ANALYZE_HDL TRUE
 # +-----------------------------------
 # | files
 # | 
-add_file ../../rtl/top/ha1588.v {SYNTHESIS SIMULATION}
-add_file ../../rtl/reg/reg.v {SYNTHESIS SIMULATION}
-add_file ../../rtl/rtc/rtc.v {SYNTHESIS SIMULATION}
-add_file ../../rtl/tsu/tsu.v {SYNTHESIS SIMULATION}
-add_file ../../rtl/tsu/ptp_parser.v {SYNTHESIS SIMULATION}
-add_file ../../rtl/tsu/ptp_queue.v {SYNTHESIS SIMULATION}
+add_file ../../../rtl/top/ha1588.v {SYNTHESIS SIMULATION}
+add_file ../../../rtl/reg/reg.v {SYNTHESIS SIMULATION}
+add_file ../../../rtl/rtc/rtc.v {SYNTHESIS SIMULATION}
+add_file ../../../rtl/tsu/tsu.v {SYNTHESIS SIMULATION}
+add_file ../../../rtl/tsu/ptp_parser.v {SYNTHESIS SIMULATION}
+add_file ../../../rtl/tsu/ptp_queue.v {SYNTHESIS SIMULATION}
 # | 
 # +-----------------------------------
 
