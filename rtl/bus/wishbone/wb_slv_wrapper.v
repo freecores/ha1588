@@ -30,7 +30,7 @@ module wb_slv_wrapper (
   input  [31:0] dat_i,
   output [31:0] dat_o,
   // localbus side
-  output        rst,clk
+  output        rst,clk,
   output        wr_out,rd_out,
   output [ 7:0] addr_out,  // in byte
   output [31:0] data_out,

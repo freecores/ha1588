@@ -93,64 +93,64 @@ add_interface_port clock rst reset Input 1
 # +-----------------------------------
 
 # +-----------------------------------
-# | connection point avalon_slave
+# | connection point reg_interface
 # | 
-add_interface avalon_slave avalon end
-set_interface_property avalon_slave addressAlignment DYNAMIC
-set_interface_property avalon_slave addressUnits WORDS
-set_interface_property avalon_slave associatedClock clock
-set_interface_property avalon_slave burstOnBurstBoundariesOnly false
-set_interface_property avalon_slave explicitAddressSpan 0
-set_interface_property avalon_slave holdTime 0
-set_interface_property avalon_slave isMemoryDevice false
-set_interface_property avalon_slave isNonVolatileStorage false
-set_interface_property avalon_slave linewrapBursts false
-set_interface_property avalon_slave maximumPendingReadTransactions 0
-set_interface_property avalon_slave printableDevice false
-set_interface_property avalon_slave readLatency 0
-set_interface_property avalon_slave readWaitTime 1
-set_interface_property avalon_slave setupTime 0
-set_interface_property avalon_slave timingUnits Cycles
-set_interface_property avalon_slave writeWaitTime 0
+add_interface reg_interface avalon end
+set_interface_property reg_interface addressAlignment DYNAMIC
+set_interface_property reg_interface addressUnits WORDS
+set_interface_property reg_interface associatedClock clock
+set_interface_property reg_interface burstOnBurstBoundariesOnly false
+set_interface_property reg_interface explicitAddressSpan 0
+set_interface_property reg_interface holdTime 0
+set_interface_property reg_interface isMemoryDevice false
+set_interface_property reg_interface isNonVolatileStorage false
+set_interface_property reg_interface linewrapBursts false
+set_interface_property reg_interface maximumPendingReadTransactions 0
+set_interface_property reg_interface printableDevice false
+set_interface_property reg_interface readLatency 0
+set_interface_property reg_interface readWaitTime 1
+set_interface_property reg_interface setupTime 0
+set_interface_property reg_interface timingUnits Cycles
+set_interface_property reg_interface writeWaitTime 0
 
-set_interface_property avalon_slave ENABLED true
+set_interface_property reg_interface ENABLED true
 
-add_interface_port avalon_slave wr_in write Input 1
-add_interface_port avalon_slave rd_in read Input 1
-add_interface_port avalon_slave addr_in address Input 8
-add_interface_port avalon_slave data_in writedata Input 32
-add_interface_port avalon_slave data_out readdata Output 32
-# | 
-# +-----------------------------------
-
-# +-----------------------------------
-# | connection point ref_clock
-# | 
-add_interface ref_clock conduit end
-
-set_interface_property ref_clock ENABLED true
-
-add_interface_port ref_clock rtc_clk export Input 1
-add_interface_port ref_clock rtc_time_ptp_ns export Output 32
-add_interface_port ref_clock rtc_time_ptp_sec export Output 48
-add_interface_port ref_clock rtc_time_one_pps export Output 1
+add_interface_port reg_interface wr_in write Input 1
+add_interface_port reg_interface rd_in read Input 1
+add_interface_port reg_interface addr_in address Input 8
+add_interface_port reg_interface data_in writedata Input 32
+add_interface_port reg_interface data_out readdata Output 32
 # | 
 # +-----------------------------------
 
 # +-----------------------------------
-# | connection point gmii_monitor
+# | connection point rtc_interface
 # | 
-add_interface gmii_monitor conduit end
+add_interface rtc_interface conduit end
 
-set_interface_property gmii_monitor ENABLED true
+set_interface_property rtc_interface ENABLED true
 
-add_interface_port gmii_monitor rx_gmii_clk export Input 1
-add_interface_port gmii_monitor rx_gmii_ctrl export Input 1
-add_interface_port gmii_monitor rx_gmii_data export Input 8
-add_interface_port gmii_monitor rx_giga_mode export Input 1
-add_interface_port gmii_monitor tx_gmii_clk export Input 1
-add_interface_port gmii_monitor tx_gmii_ctrl export Input 1
-add_interface_port gmii_monitor tx_gmii_data export Input 8
-add_interface_port gmii_monitor tx_giga_mode export Input 1
+add_interface_port rtc_interface rtc_clk export Input 1
+add_interface_port rtc_interface rtc_time_ptp_ns export Output 32
+add_interface_port rtc_interface rtc_time_ptp_sec export Output 48
+add_interface_port rtc_interface rtc_time_one_pps export Output 1
+# | 
+# +-----------------------------------
+
+# +-----------------------------------
+# | connection point tsu_interface
+# | 
+add_interface tsu_interface conduit end
+
+set_interface_property tsu_interface ENABLED true
+
+add_interface_port tsu_interface rx_gmii_clk export Input 1
+add_interface_port tsu_interface rx_gmii_ctrl export Input 1
+add_interface_port tsu_interface rx_gmii_data export Input 8
+add_interface_port tsu_interface rx_giga_mode export Input 1
+add_interface_port tsu_interface tx_gmii_clk export Input 1
+add_interface_port tsu_interface tx_gmii_ctrl export Input 1
+add_interface_port tsu_interface tx_gmii_data export Input 8
+add_interface_port tsu_interface tx_giga_mode export Input 1
 # | 
 # +-----------------------------------
