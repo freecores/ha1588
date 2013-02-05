@@ -98,11 +98,10 @@ module ha1588_axi
   // Local Bus interface
   //
   /////////////////////////////////////////////////////////////////////////////
-  assign        up_wr      = S_AXI_REG_WVALID;
-  assign        up_rd      = S_AXI_REG_ARVALID;
-  assign [ 7:0] up_addr    = S_AXI_REG_AWVALID? S_AXI_REG_AWADDR : S_AXI_REG_ARADDR;
-  assign [31:0] up_data_wr = S_AXI_REG_WDATA;
-  assign [31:0] up_data_rd;
+  assign up_wr      = S_AXI_REG_WVALID;
+  assign up_rd      = S_AXI_REG_ARVALID;
+  assign up_addr    = S_AXI_REG_AWVALID? S_AXI_REG_AWADDR : S_AXI_REG_ARADDR;
+  assign up_data_wr = S_AXI_REG_WDATA;
 
 ha1588 ha1588_inst (
   .rst(!S_AXI_REG_ARESETN),

@@ -8,6 +8,7 @@ vdel -lib work -all
 vlib altera
 # compile vendor dependent files
 vlog -work altera altera_mf.v
+vlog -work altera ../../par/altera/ip/dcfifo_128b_16.v
 
 vlib work
 # compile vendor independent files
@@ -15,7 +16,7 @@ vlog -work work ../../rtl/top/ha1588.v +initreg+0
 vlog -work work ../../rtl/reg/reg.v +initreg+0
 vlog -work work ../../rtl/rtc/rtc.v +initreg+0
 vlog -work work ../../rtl/tsu/tsu.v +initreg+0
-vlog -work work ../../rtl/tsu/ptp_queue.v +initreg+0
+vlog -work work ../../rtl/tsu/ptp_queue.v +initreg+0 +incdir+../../par/altera/ip
 vlog -work work ../../rtl/tsu/ptp_parser.v +initreg+0
 
 # compile testbench files

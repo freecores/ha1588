@@ -349,18 +349,22 @@ wire q_wr_en = ptp_found && int_eop_d1;
 wire [127:0] q_wr_data = {16'd0, tsu_time_stamp, ptp_infor};  // 16+80+32 bit
 wire [3:0] q_wrusedw;
 wire [3:0] q_rdusedw;
+wire q_wr_full;
+wire q_rd_empty;
 
 ptp_queue queue(
   .aclr(q_rst),
 
   .wrclk(q_wr_clk),
-  .wrreq(q_wr_en && q_wrusedw<15),  // write with overflow protection
+  .wrreq(q_wr_en && !q_wr_full),  // write with overflow protection
   .data(q_wr_data),
+  .wrfull(q_wr_full),
   .wrusedw(q_wrusedw),
 
   .rdclk(q_rd_clk),
-  .rdreq(q_rd_en && q_rdusedw>0 ),  // read with underflow protection
+  .rdreq(q_rd_en && !q_rd_empty),  // read with underflow protection
   .q(q_rd_data),
+  .rdempty(q_rd_empty),
   .rdusedw(q_rdusedw)
 );
 

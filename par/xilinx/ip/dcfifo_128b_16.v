@@ -25,8 +25,8 @@
 *     (c) Copyright 1995-2013 Xilinx, Inc.                                     *
 *     All rights reserved.                                                     *
 *******************************************************************************/
-// You must compile the wrapper file ptp_queue.v when simulating
-// the core, ptp_queue. When compiling the wrapper file, be sure to
+// You must compile the wrapper file dcfifo_128b_16.v when simulating
+// the core, dcfifo_128b_16. When compiling the wrapper file, be sure to
 // reference the XilinxCoreLib Verilog simulation library. For detailed
 // instructions, please refer to the "CORE Generator Help".
 
@@ -36,7 +36,7 @@
 
 `timescale 1ns/1ps
 
-module ptp_queue(
+module dcfifo_128b_16(
   rst,
   wr_clk,
   rd_clk,
@@ -111,7 +111,7 @@ output [3 : 0] wr_data_count;
     .C_ERROR_INJECTION_TYPE_WDCH(0),
     .C_ERROR_INJECTION_TYPE_WRCH(0),
     .C_FAMILY("virtex7"),
-    .C_FULL_FLAGS_RST_VAL(1),
+    .C_FULL_FLAGS_RST_VAL(0),
     .C_HAS_ALMOST_EMPTY(0),
     .C_HAS_ALMOST_FULL(0),
     .C_HAS_AXI_ARUSER(0),

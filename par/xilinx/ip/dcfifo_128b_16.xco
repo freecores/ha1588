@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.3
-# Date: Sat Feb 02 08:57:09 2013
+# Date: Mon Feb 04 13:33:11 2013
 #
 ##############################################################
 #
@@ -51,7 +51,7 @@ CSET axis_type=FIFO
 CSET buser_width=1
 CSET clock_enable_type=Slave_Interface_Clock_Enable
 CSET clock_type_axi=Common_Clock
-CSET component_name=ptp_queue
+CSET component_name=dcfifo_128b_16
 CSET data_count=false
 CSET data_count_width=4
 CSET disable_timing_violations=false
@@ -110,7 +110,7 @@ CSET fifo_implementation_rdch=Common_Clock_Block_RAM
 CSET fifo_implementation_wach=Common_Clock_Block_RAM
 CSET fifo_implementation_wdch=Common_Clock_Block_RAM
 CSET fifo_implementation_wrch=Common_Clock_Block_RAM
-CSET full_flags_reset_value=1
+CSET full_flags_reset_value=0
 CSET full_threshold_assert_value=13
 CSET full_threshold_assert_value_axis=1023
 CSET full_threshold_assert_value_rach=1023
@@ -210,4 +210,4 @@ CSET wuser_width=1
 MISC pkg_timestamp=2012-07-25T18:11:59Z
 # END Extra information
 GENERATE
-# CRC: 76d6cd2f
+# CRC: e52bce2e

@@ -48,6 +48,8 @@ set_module_property ANALYZE_HDL TRUE
 # +-----------------------------------
 # | files
 # | 
+add_file ../../../par/altera/ip/define.h {SYNTHESIS SIMULATION}
+add_file ../../../par/altera/ip/dcfifo_128_16.v {SYNTHESIS SIMULATION}
 add_file ../../../rtl/top/ha1588.v {SYNTHESIS SIMULATION}
 add_file ../../../rtl/reg/reg.v {SYNTHESIS SIMULATION}
 add_file ../../../rtl/rtc/rtc.v {SYNTHESIS SIMULATION}
