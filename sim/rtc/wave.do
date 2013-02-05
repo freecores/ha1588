@@ -26,8 +26,8 @@ add wave -noupdate -format Logic /rtc_timer_tb/DUT/adj_ld_done
 add wave -noupdate -format Literal -radix hexadecimal /rtc_timer_tb/DUT/time_adj
 add wave -noupdate -divider Delta-Sigma
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_08n_32f
-add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_08n_08f
-add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_00n_24f
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_16b_00n_24f
+add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_adj_22b_08n_08f
 add wave -noupdate -divider {New Divider}
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_30n_08f_pre_pos
 add wave -noupdate -format Literal /rtc_timer_tb/DUT/time_acc_30n_08f_pre_neg
@@ -71,4 +71,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {484 ns} {568 ns}
+WaveRestoreZoom {0 ns} {13007 ns}

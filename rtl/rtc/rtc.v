@@ -46,7 +46,7 @@ module rtc (
   output [47:0] time_ptp_sec  // 47:0 sec
 );
 
-parameter time_acc_modulo = 38'd256000000000;
+parameter time_acc_modulo = 38'd256000000000;  // 1,000,000,000ns * 256ns_fraction, 1s carry_out
 
 reg  [39:0] period_fix;  // 39:32 ns, 31:0 ns_fraction
 reg  [31:0] adj_cnt;
@@ -84,21 +84,21 @@ always @(posedge rst or posedge clk) begin
   end
 end
 
-reg  [39:0] time_adj_08n_32f;  // 39:32 ns, 31:0 ns_fraction
-wire [15:0] time_adj_08n_08f;  // 15: 8 ns,  7:0 ns_fraction
-reg  [23:0] time_adj_00n_24f;  //           23:0 ns_fraction
+reg  [39:0] time_adj_08n_32f;      //             39:32 ns, 31:0 ns_fraction
+reg  [39:0] time_adj_16b_00n_24f;  // 39:24 sign,           23:0 ns_fraction
+wire [37:0] time_adj_22b_08n_08f;  // 37:16 sign, 15: 8 ns,  7:0 ns_fraction
 // delta-sigma circuit to keep the lower 24bit of time_adj
 always @(posedge rst or posedge clk) begin
   if (rst) begin
-    time_adj_08n_32f <= 40'd0;
-    time_adj_00n_24f <= 24'd0;
+    time_adj_08n_32f     <= 40'd0;
+    time_adj_16b_00n_24f <= 24'd0;
   end
   else begin
-    time_adj_08n_32f <= time_adj[39: 0] + {16'd0, time_adj_00n_24f};  // add the delta
-    time_adj_00n_24f <= time_adj_08n_32f[23: 0];                      // save the delta
+    time_adj_08n_32f     <= time_adj[39: 0] + time_adj_16b_00n_24f;  // add the delta
+    time_adj_16b_00n_24f <= {16'h0000, time_adj_08n_32f[23: 0]}; // save the delta
   end
 end
-assign time_adj_08n_08f = time_adj_08n_32f[39:24];  // output w/o the delta
+assign time_adj_22b_08n_08f = time_adj_08n_32f[39]? {22'h3fffff, time_adj_08n_32f[39:24]}: {22'h000000, time_adj_08n_32f[39:24]};  // preserve the sign
 
 reg  [37:0] time_acc_30n_08f_pre_pos;  // 37:8 ns , 7:0 ns_fraction
 reg  [37:0] time_acc_30n_08f_pre_neg;  // 37:8 ns , 7:0 ns_fraction
@@ -111,17 +111,17 @@ always @(posedge rst or posedge clk) begin
   end
   else begin
     if (time_ld) begin  // direct write
-      time_acc_30n_08f_pre_pos <= time_reg_ns_in + {22'd0, time_adj_08n_08f};
-      time_acc_30n_08f_pre_neg <= time_reg_ns_in + {22'd0, time_adj_08n_08f};
+      time_acc_30n_08f_pre_pos <= time_reg_ns_in + time_adj_22b_08n_08f;
+      time_acc_30n_08f_pre_neg <= time_reg_ns_in + time_adj_22b_08n_08f;
     end
     else begin
       if (time_acc_48s_inc) begin
-        time_acc_30n_08f_pre_pos <= time_acc_30n_08f_pre_neg + {22'd0, time_adj_08n_08f};
-        time_acc_30n_08f_pre_neg <= time_acc_30n_08f_pre_neg + {22'd0, time_adj_08n_08f} - time_acc_modulo;
+        time_acc_30n_08f_pre_pos <= time_acc_30n_08f_pre_neg + time_adj_22b_08n_08f;
+        time_acc_30n_08f_pre_neg <= time_acc_30n_08f_pre_neg + time_adj_22b_08n_08f - time_acc_modulo;
       end
       else begin
-        time_acc_30n_08f_pre_pos <= time_acc_30n_08f_pre_pos + {22'd0, time_adj_08n_08f};
-        time_acc_30n_08f_pre_neg <= time_acc_30n_08f_pre_pos + {22'd0, time_adj_08n_08f} - time_acc_modulo;
+        time_acc_30n_08f_pre_pos <= time_acc_30n_08f_pre_pos + time_adj_22b_08n_08f;
+        time_acc_30n_08f_pre_neg <= time_acc_30n_08f_pre_pos + time_adj_22b_08n_08f - time_acc_modulo;
       end
     end
   end
@@ -160,7 +160,7 @@ end
 assign time_reg_ns  = time_acc_30n_08f;
 assign time_reg_sec = time_acc_48s;
 // time output (48bit_s + 32bit_ns)
-assign time_ptp_ns  = {2'b00, time_acc_30n_08f[37:8]};
+assign time_ptp_ns  = {2'b00, time_acc_30n_08f[37:8]};  // 30bit is enough to represent 1,000,000,000ns
 assign time_ptp_sec = time_acc_48s;
 // time output one pps
 always @(posedge rst or posedge clk) begin
