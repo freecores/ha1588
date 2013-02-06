@@ -9,8 +9,10 @@
 # | BABY&HW 2012.03.31.21:26:56
 # | Hardware Assisted IEEE 1588 IP Core
 # | 
-# | ha1588.v
+# | ha1588_avl.v
 # | 
+# |    ../../../par/altera/ip/define.h syn, sim
+# |    ../../../par/altera/ip/dcfifo_128b_16.v syn, sim
 # |    ../../../rtl/top/ha1588.v syn, sim
 # |    ../../../rtl/reg/reg.v syn, sim
 # |    ../../../rtl/rtc/rtc.v syn, sim
@@ -28,17 +30,17 @@ package require -exact sopc 10.1
 # +-----------------------------------
 
 # +-----------------------------------
-# | module ha1588
+# | module ha1588_avl
 # | 
 set_module_property DESCRIPTION "Hardware Assisted IEEE 1588 IP Core"
-set_module_property NAME ha1588
+set_module_property NAME ha1588_avl
 set_module_property VERSION 1.0
 set_module_property INTERNAL false
 set_module_property OPAQUE_ADDRESS_MAP true
 set_module_property AUTHOR "BABY&HW"
 set_module_property DISPLAY_NAME "Hardware Assisted IEEE 1588 IP Core"
-set_module_property TOP_LEVEL_HDL_FILE ha1588.v
-set_module_property TOP_LEVEL_HDL_MODULE ha1588
+set_module_property TOP_LEVEL_HDL_FILE ha1588_avl.v
+set_module_property TOP_LEVEL_HDL_MODULE ha1588_avl
 set_module_property INSTANTIATE_IN_SYSTEM_MODULE true
 set_module_property EDITABLE true
 set_module_property ANALYZE_HDL TRUE
@@ -48,8 +50,9 @@ set_module_property ANALYZE_HDL TRUE
 # +-----------------------------------
 # | files
 # | 
+add_file ha1588_avl.v {SYNTHESIS SIMULATION}
 add_file ../../../par/altera/ip/define.h {SYNTHESIS SIMULATION}
-add_file ../../../par/altera/ip/dcfifo_128_16.v {SYNTHESIS SIMULATION}
+add_file ../../../par/altera/ip/dcfifo_128b_16.v {SYNTHESIS SIMULATION}
 add_file ../../../rtl/top/ha1588.v {SYNTHESIS SIMULATION}
 add_file ../../../rtl/reg/reg.v {SYNTHESIS SIMULATION}
 add_file ../../../rtl/rtc/rtc.v {SYNTHESIS SIMULATION}
