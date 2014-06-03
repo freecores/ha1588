@@ -125,7 +125,7 @@ wire cs_78 = (addr_in[7:2]==const_78[7:2])? 1'b1: 1'b0;
 wire cs_7c = (addr_in[7:2]==const_7c[7:2])? 1'b1: 1'b0;
 
 reg [31:0] reg_00;  // ctrl 5 bit
-reg [31:0] reg_04;  // null
+reg [31:0] reg_04;  // scratch reg
 reg [31:0] reg_08;  // null
 reg [31:0] reg_0c;  // null
 reg [31:0] reg_10;  // time 16 bit s
@@ -208,7 +208,7 @@ reg  [31:0] data_out_reg;
 always @(posedge clk) begin
   // register mapping: RTC
   if (rd_in && cs_00) data_out_reg <= {27'd0, reg_00[ 4: 2], adj_ld_done_in, time_ok};
-  if (rd_in && cs_04) data_out_reg <= 32'd0;
+  if (rd_in && cs_04) data_out_reg <= reg_04;
   if (rd_in && cs_08) data_out_reg <= 32'd0;
   if (rd_in && cs_0c) data_out_reg <= 32'd0;
   if (rd_in && cs_10) data_out_reg <= {16'd0, time_reg_sec_int[47:32]};

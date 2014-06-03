@@ -26,7 +26,7 @@ module ha1588_axi
 
     // Register Slave Interface Write Response Ports
     output wire [2-1:0]                        S_AXI_REG_BRESP,
-    output wire                                S_AXI_REG_BVALID,
+    output reg                                 S_AXI_REG_BVALID,
     input  wire                                S_AXI_REG_BREADY,
 
     // Register Slave Interface Read Address Ports
@@ -78,7 +78,10 @@ module ha1588_axi
   assign S_AXI_REG_AWREADY = 1'b1;
   assign S_AXI_REG_WREADY  = 1'b1;
   assign S_AXI_REG_BRESP   = 2'b00;
-  assign S_AXI_REG_BVALID  = S_AXI_REG_WVALID;
+  always @(negedge S_AXI_REG_ARESETN or posedge S_AXI_REG_ACLK) begin
+    if (!S_AXI_REG_ARESETN) S_AXI_REG_BVALID <= 1'b0;
+    else                    S_AXI_REG_BVALID <= S_AXI_REG_WVALID;
+  end
   assign S_AXI_REG_ARREADY = 1'b1;
   assign S_AXI_REG_RDATA   = up_data_rd;
   assign S_AXI_REG_RRESP   = 2'b00;
